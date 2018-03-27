@@ -1,0 +1,19 @@
+---
+title: "MethodSandbox"
+author: "Jonathan Gross"
+date: "March 27, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Overview
+
+load("")
+
+This provides a good overview for implementing a lot of these methods in R and has associated downloadable packages: 
+http://www-bcf.usc.edu/~gareth/ISL/ -- click the "Download the book link" -it is available for free from the author
+
+## Lasso Method
+See Section 6.2.3 In linked book
