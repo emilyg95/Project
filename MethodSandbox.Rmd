@@ -9,11 +9,99 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 # Overview
-
-load("")
-
 This provides a good overview for implementing a lot of these methods in R and has associated downloadable packages: 
 http://www-bcf.usc.edu/~gareth/ISL/ -- click the "Download the book link" -it is available for free from the author
 
+
+```{r}
+rm(list = ls())
+setwd("C:/Users/jgros/Documents/GitHub/Project")
+load("Het_Experiment.RData")
+
+# Look at data -- see what columns exist
+fix(svdat)
+
+
+# Subset a few useful vaiables
+#   pid3l = political leaning (Dem/Rep/Ind) 
+#   educ = education level (int)
+#   inc = income level (int)
+#   ntvEnglish = english speaker (binary/int)
+#   race (int)
+#   gender(int)
+#   ResponseID = unique identifier (string/char)
+# Subset to just a few rows, for faster run time
+toyDataTrain = subset(svdat, select=c('ResponseID','gender','race','ntvEnglish','inc','educ','pid3l'))[1:100,]
+
+# Also create a testing data subset
+# Will need to swtich to k-fold
+toyDataTest = subset(svdat, select=c('ResponseID','gender','race','ntvEnglish','inc','educ','pid3l'))[101:120,]
+
+
+#Check for null vals in data
+fix(toyDataTrain)
+toyDataTrain = toyDataTrain[!is.na(toyDataTrain$ntvEnglish),]
+
+fix(toyDataTest)
+toyDataTest = toyDataTest[!is.na(toyDataTest$ntvEnglish),]
+
+
+#From RepCode
+names(svdat)[23:51] = c("preq1", "preq2", "preq3", 
+		"nextc", "contr", "nextt", "treat",
+		"approval", "therm", "fiscRespbl", 
+		"bringMoneyEff", "passLegEff",
+		"secReqMC", "likGetM", "daysGetM", "break", 
+		"gender", "race", "byear", "ntvEnglish",
+		"ideo3", "voted", "pid3", "pidCloser", "educ",
+		"inc", "finalinst", "howLong", "comments")
+
+
+```
+
 ## Lasso Method
 See Section 6.2.3 In linked book
+
+Minimize: RSS + $\lambda$*$\sum{|\beta_j|}$
+where beta is linear regression coefficeint, and lambda is a penalty term
+
+```{r}
+
+# GLMnet is package for doing lasso or elastic net regularization
+
+library(glmnet)
+
+#Convert Political Leaning to Int
+response = numeric(length(toyDataTrain[,1]))
+response[which(toyDataTrain$pid3l == 'Dem')] = 1
+response[which(toyDataTrain$pid3l == 'Ind/Oth')] = 3
+response[which(toyDataTrain$pid3l == 'Rep')] = 2
+
+
+#x = predictors
+# t = response variable
+# Lambda = penalty, we are trying with a lot of lambdas right now (via grid)
+# Alpha = elastic net parameter, set to 1 for Lasso
+grid = 10^seq(10,-2,length=100)
+lasso.Result = glmnet(data.matrix(toyDataTrain[,2:6]),response,alpha = 1,lambda = grid)
+
+set.seed(1)
+
+# Can use Cv.glmnet for a k-fold cross validation
+cv.out = cv.glmnet(toyDataTrain[,2:6])response,alpha=1)
+
+plot(cv.out)
+
+bestlam = cv.out$lambda.min
+
+lasso.pred=predict(lasso.mod,s=bestlam,newx=x[test,])
+
+mean((lasso.pred-y.test)^2)
+
+out=glmnet(x,y,alpha=1,lambda=grid)
+
+lasso.coef = predict(out,type="coefficients",s=bestlam)[1:20,]
+
+lasso.coef
+
+```

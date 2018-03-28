@@ -432,7 +432,8 @@ diff<- preds$Treated - preds$Control
 final.eff<- c()
 for(z in 1:nrow(preds$Treated)){
 	final.eff[z]<- diff[z,]%*%preds$Weight
-	}
+}
+
 	
 
 
