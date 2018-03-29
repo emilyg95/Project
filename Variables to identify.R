@@ -139,6 +139,11 @@ if(is.null(ncol(treat)) == T){
                  fit.glmnet=TRUE, wts=1)	}
 
 
+#seems to require Y, Xstd, treat
+# Y and treat already defined 
+
+Xstd <- apply(X, 2, mkstand) #line 50 0f SLF
+
 ##### Bayesian GLM #######
 
 # Lines 116-117
