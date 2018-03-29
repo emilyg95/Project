@@ -244,6 +244,7 @@ install.packages("BayesTree")
 library(BayesTree)
 fit8<- bart(x.train=Xfull, y.train=factor(Y), x.test=Xtfull, ndpost=1000, nskip=500, usequants=T)
 
+
 ## defining xtfull
 
 Xtfull <- model.matrix(~Xt*treatt) #line 56 of SLF
