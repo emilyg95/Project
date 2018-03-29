@@ -66,6 +66,8 @@ Xfull <- model.matrix(~X*treat)
 X <- covs #line 432 of repcode 
 covs<- cbind(dem, rep, lib, cons) #line 373 of rep code 
 
+############# different def of covs on line 863 of rep code. Investigate this 
+
 dem<- ifelse(svdat$pid3l=='Dem', 1, 0) Line #line 366-369 of rep code
 dem[which(is.na(dem))]<- 0
 rep<- ifelse(svdat$pid3l=='Rep', 1, 0)
@@ -93,6 +95,11 @@ treats<- cbind(type.mat.final, num.mat.final[,1], stage.mat.final[,1:2],party.ma
 
 
 ## unclear what exaclty the ~ means. 
+
+#Defining the Y variable 
+
+approve_bi <- y #line 432 of rep code 
+approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
 
 
 
