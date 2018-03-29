@@ -105,7 +105,8 @@ rel_overall_mean<- overall_mean[-10]/overall_mean[10]
 ##names list
 ##LASSO, elastic net 0.5, elastic net 0.25, FindIt, Bayes GLM, BART, Random Forest, KRLS, SVM-SMO
 
-names<- c('LASSO', 'Elastic Net 0.5', 'Elastic Net 0.25', 'Find It', 'Bayesian GLM','BART', 'Random Forest', 'KRLS', 'SVM-SMO', 'Weighted Ensemble',  'Naive Average')
+names<- c('LASSO', 'Elastic Net 0.5', 'Elastic Net 0.25', 'Find It', 'Bayesian GLM','BART', 
+          'Random Forest', 'KRLS', 'SVM-SMO', 'Weighted Ensemble',  'Naive Average')
 
 
 table.func<- function(vecs, names){
@@ -387,7 +388,13 @@ along.mat.final<- data.frame(along.mat.final)
 colnames(along.mat.final)<- c('alone', 'w_rep', 'w_dem')
 
 
-treats<- cbind(type.mat.final, num.mat.final[,1], stage.mat.final[,1:2],party.mat.final[,1], along.mat.final[,1:2], type.mat.final[,1:5]*num.mat.final[,1], type.mat.final[,1:5]*stage.mat.final[,1], type.mat.final[,1:5]*stage.mat.final[,2], type.mat.final[,1:5]*party.mat.final[,1], type.mat.final[,1:5]*along.mat.final[,1], type.mat.final[,1:5]*along.mat.final[,2], num.mat.final[,1]*stage.mat.final[,1], num.mat.final[,1]*stage.mat.final[,2], num.mat.final[,1]*party.mat.final[,1], num.mat.final[,1]*along.mat.final[,1], num.mat.final[,1]*along.mat.final[,2],stage.mat.final[,1:2]*party.mat.final[,1], stage.mat.final[,1:2]*along.mat.final[,1], stage.mat.final[,1:2]*along.mat.final[,2], party.mat.final[,1]*along.mat.final[,1], party.mat.final[,1]*along.mat.final[,2] )
+treats<- cbind(type.mat.final, num.mat.final[,1], stage.mat.final[,1:2],party.mat.final[,1], 
+               along.mat.final[,1:2], type.mat.final[,1:5]*num.mat.final[,1], type.mat.final[,1:5]*stage.mat.final[,1], 
+               type.mat.final[,1:5]*stage.mat.final[,2], type.mat.final[,1:5]*party.mat.final[,1], type.mat.final[,1:5]*along.mat.final[,1],
+               type.mat.final[,1:5]*along.mat.final[,2], num.mat.final[,1]*stage.mat.final[,1], num.mat.final[,1]*stage.mat.final[,2], 
+               num.mat.final[,1]*party.mat.final[,1], num.mat.final[,1]*along.mat.final[,1], num.mat.final[,1]*along.mat.final[,2],
+               stage.mat.final[,1:2]*party.mat.final[,1], stage.mat.final[,1:2]*along.mat.final[,1], 
+               stage.mat.final[,1:2]*along.mat.final[,2], party.mat.final[,1]*along.mat.final[,1], party.mat.final[,1]*along.mat.final[,2] )
 
 type.short<- c('PlanParent', 'Parks', 'Gun_Range', 'Fire', 'Police', 'Roads')
 num.short<- c('mil_20', 'thou_50')
