@@ -157,13 +157,28 @@ Y<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code
 # Lines 76-113 in SLF_round2
 # Supposedly takes a lot of time to run
 
+install.packages("FindIt")
 library(FindIt)
 
 #Next two lines change response variable from 0/1 to -1/1 (i.e. turn 0 into -1)
 FIY <- Y
 FIY[FIY==0] <- -1
 
-# If processing on data that has received treatment
+
+mkstand <- function(x){
+  x <- x - mean(x, na.rm=T)
+  if(sd(x, na.rm=T) >0){
+    x <- x/sd(x, na.rm=T)		
+  }
+  return(x)
+}
+
+
+Xstd <- apply(X, 2, mkstand) #line 50 0f SLF
+
+
+?ncol
+
 if(is.null(ncol(treat))==F){
   
   #Pre-processing of data (i.e. formatting)
@@ -191,12 +206,13 @@ if(is.null(ncol(treat)) == T){
 #seems to require Y, Xstd, treat
 # Y and treat already defined 
 
-Xstd <- apply(X, 2, mkstand) #line 50 0f SLF
+
 
 ##### Bayesian GLM #######
 
 # Lines 116-117
 
+install.packages("arm")
 library(arm)
 fit6<- bayesglm(Y~Xfull-1, family=binomial(link=logit))
 
@@ -206,22 +222,32 @@ fit6<- bayesglm(Y~Xfull-1, family=binomial(link=logit))
 # NOTE: this appears in the SLF_round2 file, but does not appear in Table 2 of paper
 # MIGHT NOT NEED TO DO THIS
 # Lines 122 -125
+
+install.packages("mboost")
+install.packages("GAMBoost")
 library(mboost)
 library(GAMBoost)
 fit7<- GLMBoost(Xfull[,-1],Y,penalty= 100,stepno=100,  trace = T,  family=binomial())
+
+#runs but it has the following warning:  "In 1/((x.linear[subset, best.candidate.linear] * D * weights) %*%  ... :
+#Recycling array of length 1 in array-vector arithmetic is deprecated.
+#Use c() or as.vector() instead.
+
 
 #xfull and Y already defined 
 
 ########### BART ########### 
 # BART = Bayesian Adaptive Regression Trees
 # Lines 130-131
+
+install.packages("BayesTree")
 library(BayesTree)
 fit8<- bart(x.train=Xfull, y.train=factor(Y), x.test=Xtfull, ndpost=1000, nskip=500, usequants=T)
 
 ## defining xtfull
 
 Xtfull <- model.matrix(~Xt*treatt) #line 56 of SLF
-covs<- xt #line 432 of rep code 
+Xt<- covs #line 432 of rep code 
 #covs is defined in lasso section 
 
 treatt<- treats #line 432 of rep code 
@@ -232,6 +258,7 @@ treatt<- treats #line 432 of rep code
 
 ######  Random Forest #######
 # Lines 136-137
+install.packages("randomForest")
 library(randomForest)
 fit9<- randomForest(y = factor(Y), x = Xfull)
 
@@ -241,8 +268,12 @@ fit9<- randomForest(y = factor(Y), x = Xfull)
 ###### KRLS ############
 # KRLS = Kernel-Based Regularized Least Squares (very new ML method, 2014)
 # Line 150
+install.packages("KRLS")
 library(KRLS)
 fit11<- krls(X = Xfull[,-1], y = Y, derivative=F)
+#warnings: 1: In Eigenobject$values + lambda :
+#Recycling array of length 1 in vector-array arithmetic is deprecated.
+#Use c() or as.vector() instead.
 
 #already defined 
 
@@ -252,14 +283,17 @@ fit11<- krls(X = Xfull[,-1], y = Y, derivative=F)
 # NOTE: this method requires 4 gb of RAM Free to Run. 
 # I am commenting this section out, so you can verify that you have this before running this section.
 
-# library(rJava)
-# .jinit(parameters="-Xmx4g")
-# library(RWeka)
-# 
-# 
-# fit12 <- SMO(Y ~ ., data = data.frame(Y=factor(Y),Xfull),
-#              control = Weka_control(M = TRUE ) )
-# 
+install.packages("rJava")
+library(rJava)
+.jinit(parameters="-Xmx4g")
+
+install.packages("RWeka")
+library(RWeka)
+
+
+fit12 <- SMO(Y ~ ., data = data.frame(Y=factor(Y),Xfull),
+             control = Weka_control(M = TRUE ) )
+
 
 ######## Naive Average ####
 # Just a simple mean
