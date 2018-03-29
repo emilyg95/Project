@@ -1,29 +1,3 @@
-
-#What we are doing 
-
-part2<- wrap.func(covs, approve_bi, treats, covs, approve_bi, treats, speed=F)
-#Do above function, indiviudally, for each test
-
-#Elements that go into function 
-
-covs<- cbind(dem, rep, lib, cons)
-colnames(covs)<- c('Dem', 'Rep', 'Lib', 'Cons')
-
-approve_bi<- ifelse(svdat$approval<3, 1, 0)
-
-fit1<- cv.glmnet(y = Y, x= Xfull, alpha=1, family='binomial', type='mse')
-
-treats<- cbind(type.mat.final, num.mat.final[,1], stage.mat.final[,1:2],party.mat.final[,1], 
-               along.mat.final[,1:2], type.mat.final[,1:5]*num.mat.final[,1], type.mat.final[,1:5]*stage.mat.final[,1], 
-               type.mat.final[,1:5]*stage.mat.final[,2], type.mat.final[,1:5]*party.mat.final[,1], type.mat.final[,1:5]*along.mat.final[,1],
-               type.mat.final[,1:5]*along.mat.final[,2], num.mat.final[,1]*stage.mat.final[,1], num.mat.final[,1]*stage.mat.final[,2], 
-               num.mat.final[,1]*party.mat.final[,1], num.mat.final[,1]*along.mat.final[,1], num.mat.final[,1]*along.mat.final[,2],
-               stage.mat.final[,1:2]*party.mat.final[,1], stage.mat.final[,1:2]*along.mat.final[,1], 
-               stage.mat.final[,1:2]*along.mat.final[,2], party.mat.final[,1]*along.mat.final[,1], party.mat.final[,1]*along.mat.final[,2] )
-
-
-
-
 #What to do, define every variable in this file 
 
 ######################################################
@@ -75,6 +49,7 @@ treats<- cbind(type.mat.final, num.mat.final[,1], stage.mat.final[,1:2],party.ma
 ## ? glmnet()
 ## ? cv.glmnet()
 
+install.packages("glmnet")
 library(glmnet)
 # Alpha = 1 is same as lasso 
 fit1<- cv.glmnet(y = Y, x= Xfull, alpha=1, family='binomial', type='mse')
@@ -83,6 +58,98 @@ fit2<- cv.glmnet(y = Y, x= Xfull, alpha=0.5, family='binomial', type='mse')
 # Elastic Net, Alpha = .2 5
 fit3<- cv.glmnet(y = Y, x= Xfull, alpha=0.15, family='binomial', type='mse')
 fit4<- cv.glmnet(y = Y, x= Xfull, alpha=0, family='binomial', type='mse')
+
+
+### Defining the X variable 
+
+Xfull <- model.matrix(~X*treat)
+X <- covs #line 432 of repcode 
+covs<- cbind(dem, rep, lib, cons) #line 373 of rep code 
+
+############# different def of covs on line 863 of rep code. Investigate this 
+
+dem<- ifelse(svdat$pid3l=='Dem', 1, 0)  #line 366-369 of rep code
+dem[which(is.na(dem))]<- 0
+rep<- ifelse(svdat$pid3l=='Rep', 1, 0)
+rep[which(is.na(rep))]<- 0
+
+cons<- ifelse(svdat$ideo3<3, 1, 0) #line 230-231 of rep code
+lib<- ifelse(svdat$ideo3==4|svdat$ideo3==5, 1, 0)
+
+lib[which(is.na(lib))]<- 0 #line 370-371 of rep code 
+cons[which(is.na(cons))]<- 0
+
+treat<- treats #line 448 of rep code 
+
+############ Defining treats
+
+type.mat<- matrix(0, nrow = 1074, ncol=7)
+colnames(type.mat)<- sort(unique(as.character(svdat$cond.type)))
+for(z in 1:nrow(type.mat)){
+  type.mat[z,which(colnames(type.mat)==svdat$cond.type[z])]<- 1}
+
+type.mat.final<- type.mat[,-1]
+
+num.mat<- matrix(0, nrow=1074, ncol=3)
+colnames(num.mat)<- number
+for(z in 1:nrow(num.mat)){
+  num.mat[z,which(colnames(num.mat)==svdat$cond.money[z])]<- 1
+}
+num.mat.final<- num.mat[,-1]
+
+stage.mat<- matrix(0, nrow=1074, ncol=4)
+colnames(stage.mat)<- request
+for(z in 1:nrow(stage.mat)){
+  stage.mat[z,which(colnames(stage.mat)==svdat$cond.stage[z])]<- 1
+}
+
+stage.mat.final<- stage.mat[,-1]
+
+party.mat<- matrix(0, nrow=1074, ncol=3)
+colnames(party.mat)<- party
+for(z in 1:nrow(party.mat)){
+  party.mat[z, which(colnames(party.mat)==svdat$cond.party[z])]<- 1
+}
+
+party.mat.final<- party.mat[,-1]	
+
+along.mat<- matrix(0, nrow=1074, ncol=4)
+colnames(along.mat)<- 	along
+for(z in 1:nrow(along.mat)){
+  along.mat[z,which(colnames(along.mat)==svdat$cond.alongWith[z])]<- 1
+}
+
+along.mat.final<- along.mat[,-1]	
+
+types<- sort(unique(as.character(svdat$cond.type)))
+type.num<- match(svdat$cond.type, types)
+number<- c('control', '$20 million', '$50 thousand')
+amount.num<- match(svdat$cond.money, number)
+request<- c('control', 'requested', 'secured', 'will request')
+stage.num<- match(svdat$cond.stage, request)
+party<- c('control', 'a Republican', 'a Democrat')
+party.num<- match(svdat$cond.party, party)
+along<- c('control', 'alone', 'w/ Rep', 'w/ Dem')
+along.num<- match(svdat$cond.alongWith, along)
+
+
+treats<- cbind(type.mat.final, num.mat.final[,1], stage.mat.final[,1:2],party.mat.final[,1], 
+               along.mat.final[,1:2], type.mat.final[,1:5]*num.mat.final[,1], type.mat.final[,1:5]*stage.mat.final[,1], 
+               type.mat.final[,1:5]*stage.mat.final[,2], type.mat.final[,1:5]*party.mat.final[,1], type.mat.final[,1:5]*along.mat.final[,1],
+               type.mat.final[,1:5]*along.mat.final[,2], num.mat.final[,1]*stage.mat.final[,1], num.mat.final[,1]*stage.mat.final[,2], 
+               num.mat.final[,1]*party.mat.final[,1], num.mat.final[,1]*along.mat.final[,1], num.mat.final[,1]*along.mat.final[,2],
+               stage.mat.final[,1:2]*party.mat.final[,1], stage.mat.final[,1:2]*along.mat.final[,1], 
+               stage.mat.final[,1:2]*along.mat.final[,2], party.mat.final[,1]*along.mat.final[,1], party.mat.final[,1]*along.mat.final[,2] )
+
+## line 391 of rep code 
+
+
+#Defining the Y variable 
+
+#line 432 of rep code 
+Y<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
+
+
 
 
 ######### FindIt ########
@@ -120,12 +187,19 @@ if(is.null(ncol(treat)) == T){
                  fit.glmnet=TRUE, wts=1)	}
 
 
+#seems to require Y, Xstd, treat
+# Y and treat already defined 
+
+Xstd <- apply(X, 2, mkstand) #line 50 0f SLF
+
 ##### Bayesian GLM #######
 
 # Lines 116-117
 
 library(arm)
 fit6<- bayesglm(Y~Xfull-1, family=binomial(link=logit))
+
+## Y and Xfull defined in Lasso section 
 
 ######### Boosted Tree ######
 # NOTE: this appears in the SLF_round2 file, but does not appear in Table 2 of paper
@@ -135,11 +209,24 @@ library(mboost)
 library(GAMBoost)
 fit7<- GLMBoost(Xfull[,-1],Y,penalty= 100,stepno=100,  trace = T,  family=binomial())
 
+#xfull and Y already defined 
+
 ########### BART ########### 
 # BART = Bayesian Adaptive Regression Trees
 # Lines 130-131
 library(BayesTree)
 fit8<- bart(x.train=Xfull, y.train=factor(Y), x.test=Xtfull, ndpost=1000, nskip=500, usequants=T)
+
+## defining xtfull
+
+Xtfull <- model.matrix(~Xt*treatt) #line 56 of SLF
+covs<- xt #line 432 of rep code 
+#covs is defined in lasso section 
+
+treatt<- treats #line 432 of rep code 
+#treats defined in lasso section 
+
+
 
 
 ######  Random Forest #######
@@ -147,12 +234,16 @@ fit8<- bart(x.train=Xfull, y.train=factor(Y), x.test=Xtfull, ndpost=1000, nskip=
 library(randomForest)
 fit9<- randomForest(y = factor(Y), x = Xfull)
 
+#already defined 
+
 
 ###### KRLS ############
 # KRLS = Kernel-Based Regularized Least Squares (very new ML method, 2014)
 # Line 150
 library(KRLS)
 fit11<- krls(X = Xfull[,-1], y = Y, derivative=F)
+
+#already defined 
 
 ###### SVM-SMO #############
 # SVM = Support Vector Machine
