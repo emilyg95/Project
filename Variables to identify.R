@@ -146,6 +146,8 @@ if(is.null(ncol(treat)) == T){
 library(arm)
 fit6<- bayesglm(Y~Xfull-1, family=binomial(link=logit))
 
+## Y and Xfull defined in Lasso section 
+
 ######### Boosted Tree ######
 # NOTE: this appears in the SLF_round2 file, but does not appear in Table 2 of paper
 # MIGHT NOT NEED TO DO THIS
@@ -154,11 +156,24 @@ library(mboost)
 library(GAMBoost)
 fit7<- GLMBoost(Xfull[,-1],Y,penalty= 100,stepno=100,  trace = T,  family=binomial())
 
+#xfull and Y already defined 
+
 ########### BART ########### 
 # BART = Bayesian Adaptive Regression Trees
 # Lines 130-131
 library(BayesTree)
 fit8<- bart(x.train=Xfull, y.train=factor(Y), x.test=Xtfull, ndpost=1000, nskip=500, usequants=T)
+
+## defining xtfull
+
+Xtfull <- model.matrix(~Xt*treatt) #line 56 of SLF
+covs<- xt #line 432 of rep code 
+#covs is defined in lasso section 
+
+treatt<- treats #line 432 of rep code 
+#treats defined in lasso section 
+
+
 
 
 ######  Random Forest #######
@@ -166,12 +181,16 @@ fit8<- bart(x.train=Xfull, y.train=factor(Y), x.test=Xtfull, ndpost=1000, nskip=
 library(randomForest)
 fit9<- randomForest(y = factor(Y), x = Xfull)
 
+#already defined 
+
 
 ###### KRLS ############
 # KRLS = Kernel-Based Regularized Least Squares (very new ML method, 2014)
 # Line 150
 library(KRLS)
 fit11<- krls(X = Xfull[,-1], y = Y, derivative=F)
+
+#already defined 
 
 ###### SVM-SMO #############
 # SVM = Support Vector Machine
