@@ -150,7 +150,7 @@ Y<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code
 ## ? glmnet()
 ## ? cv.glmnet()
 
-install.packages("glmnet")
+#install.packages("glmnet")
 library(glmnet)
 # Alpha = 1 is same as lasso 
 fit1<- cv.glmnet(y = Y, x= Xfull, alpha=1, family='binomial', type='mse')
@@ -165,7 +165,7 @@ fit4<- cv.glmnet(y = Y, x= Xfull, alpha=0, family='binomial', type='mse')
 # Lines 76-113 in SLF_round2
 # Supposedly takes a lot of time to run
 
-install.packages("FindIt")
+#install.packages("FindIt")
 library(FindIt)
 
 #Next two lines change response variable from 0/1 to -1/1 (i.e. turn 0 into -1)
@@ -220,7 +220,7 @@ if(is.null(ncol(treat)) == T){
 
 # Lines 116-117
 
-install.packages("arm")
+#install.packages("arm")
 library(arm)
 fit6<- bayesglm(Y~Xfull-1, family=binomial(link=logit))
 
@@ -231,8 +231,8 @@ fit6<- bayesglm(Y~Xfull-1, family=binomial(link=logit))
 # MIGHT NOT NEED TO DO THIS
 # Lines 122 -125
 
-install.packages("mboost")
-install.packages("GAMBoost")
+#install.packages("mboost")
+#install.packages("GAMBoost")
 library(mboost)
 library(GAMBoost)
 fit7<- GLMBoost(Xfull[,-1],Y,penalty= 100,stepno=100,  trace = T,  family=binomial())
@@ -248,7 +248,7 @@ fit7<- GLMBoost(Xfull[,-1],Y,penalty= 100,stepno=100,  trace = T,  family=binomi
 # BART = Bayesian Adaptive Regression Trees
 # Lines 130-131
 
-install.packages("BayesTree")
+#install.packages("BayesTree")
 library(BayesTree)
 fit8<- bart(x.train=Xfull, y.train=factor(Y), x.test=Xtfull, ndpost=1000, nskip=500, usequants=T)
 
@@ -267,7 +267,7 @@ treatt<- treats #line 432 of rep code
 
 ######  Random Forest #######
 # Lines 136-137
-install.packages("randomForest")
+#install.packages("randomForest")
 library(randomForest)
 fit9<- randomForest(y = factor(Y), x = Xfull)
 
@@ -277,7 +277,7 @@ fit9<- randomForest(y = factor(Y), x = Xfull)
 ###### KRLS ############
 # KRLS = Kernel-Based Regularized Least Squares (very new ML method, 2014)
 # Line 150
-install.packages("KRLS")
+#install.packages("KRLS")
 library(KRLS)
 fit11<- krls(X = Xfull[,-1], y = Y, derivative=F)
 #warnings: 1: In Eigenobject$values + lambda :
@@ -292,11 +292,11 @@ fit11<- krls(X = Xfull[,-1], y = Y, derivative=F)
 # NOTE: this method requires 4 gb of RAM Free to Run. 
 # I am commenting this section out, so you can verify that you have this before running this section.
 
-install.packages("rJava")
+#install.packages("rJava")
 library(rJava)
 .jinit(parameters="-Xmx4g")
 
-install.packages("RWeka")
+#install.packages("RWeka")
 library(RWeka)
 
 
