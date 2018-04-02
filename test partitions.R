@@ -3,7 +3,7 @@
 
 
 ##############
-#defining x varaible in partions 
+#defining x varaible in portions 
 
 Xfull <- model.matrix(~covs*treat)
 
@@ -82,8 +82,10 @@ treatfull_8 <- treat[-treattest_8,]
 treatfull_9 <- treat[-treattest_9,]
 treatfull_10 <- treat[-treattest_10,]
 
-#################
-#def y in partions 
+treatfull <- 
+  
+  #################
+#def y in portions 
 
 Yfull_1<- ifelse(svdat[-c(1:107),]$approval<3, 1, 0)
 Yfull_2<- ifelse(svdat[-c(108:215),]$approval<3, 1, 0)
@@ -114,4 +116,5 @@ seventh<- svdat[c(648:755),]
 eighth<- svdat[c(756:863),]
 ninth<- svdat[c(864:971),]
 tenth<- svdat[c(972:1074),]
+
 
