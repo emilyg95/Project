@@ -43,7 +43,11 @@ type.mat<- matrix(0, nrow = 1074, ncol=7)
 colnames(type.mat)<- sort(unique(as.character(svdat$cond.type)))
 for(z in 1:nrow(type.mat)){
   type.mat[z,which(colnames(type.mat)==svdat$cond.type[z])]<- 1
+<<<<<<< HEAD
 }
+=======
+  }
+>>>>>>> fc95a952d7bba3e9bc05308e27a6eae2c85eb732
 
 type.mat.final<- type.mat[,-1]
 
