@@ -68,14 +68,13 @@ best.lambda = fit1$lambda.min
 fit1.coefs = predict(fit1,s = best.lambda, type= "coefficients")
 fit1.coefs
 
-Yfull_10<- ifelse(svdat[-c(972:1074),]$approval<3, 1, 0)
-Y_test1
+Ytest_1<- ifelse(svdat[c(1:107),]$approval<3, 1, 0)
 
-fit1.predict = predict(fit1, s= best.lambda, xnew = Xtest_1)
-fit1.RSS = sum((fit1.RSS-Y_test1)^2)
+fit1.predict = predict(fit1, s= best.lambda, newx = Xtest_1)
+fit1.RSS = sum((fit1.predict-Ytest_1)^2)
 fit1.RSS
 
-fit1.MSE = mean((fit1.RSS-Y_test1)^2)
+fit1.MSE = mean((fit1.predict-Ytest_1)^2)
 fit1.MSE
 
 # Elastic Net, Alpha = .5
