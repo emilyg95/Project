@@ -57,5 +57,33 @@ fit8<- bart(x.train=Xfull_1, y.train=factor(Yfull_1), x.test=Xtest_1, ndpost=100
 
 
 
+#Show how to use predict
+
+library(glmnet)
+# Alpha = 1 is same as lasso 
+fit1<- cv.glmnet(y = Yfull_1, x= Xfull_1, alpha=1, family='binomial', type='mse')
+
+best.lambda = fit1$lambda.min
+
+fit1.coefs = predict(fit1,s = best.lambda, type= "coefficients")
+fit1.coefs
+
+Yfull_10<- ifelse(svdat[-c(972:1074),]$approval<3, 1, 0)
+Y_test1
+
+fit1.predict = predict(fit1, s= best.lambda, xnew = Xtest_1)
+fit1.RSS = sum((fit1.RSS-Y_test1)^2)
+fit1.RSS
+
+fit1.MSE = mean((fit1.RSS-Y_test1)^2)
+fit1.MSE
+
+# Elastic Net, Alpha = .5
+fit2<- cv.glmnet(y = Y, x= Xfull, alpha=0.5, family='binomial', type='mse')
+# Elastic Net, Alpha = .2 5
+fit3<- cv.glmnet(y = Y, x= Xfull, alpha=0.15, family='binomial', type='mse')
+fit4<- cv.glmnet(y = Y, x= Xfull, alpha=0, family='binomial', type='mse')
+
+
 
 
