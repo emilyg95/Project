@@ -1,4 +1,3 @@
-
 #What to do, define every variable in this file 
 
 ######################################################
@@ -11,14 +10,14 @@
 ################## Setup ###############
 ## Packages you will need to install (uncomment and run this section once):
 ## You can uncomment all lines at once by highlighting the lines, then ctrl+shift+c
-# install.packages(glmnet)
-# install.packages(FindIt)
-# install.packages(arm)
-# install.packages(GAMBoost)
-# install.packages(mboost)
-# install.packages("KRLS")
-# install.packages("rJava")
-# install.packages("RWeka")
+install.packages("glmnet")
+install.packages("FindIt")
+install.packages("arm")
+install.packages("GAMBoost")
+install.packages("mboost")
+install.packages("KRLS")
+install.packages("rJava")
+install.packages("RWeka")
 
 ############# different def of covs on line 863 of rep code. Investigate this 
 
@@ -44,7 +43,7 @@ type.mat<- matrix(0, nrow = 1074, ncol=7)
 colnames(type.mat)<- sort(unique(as.character(svdat$cond.type)))
 for(z in 1:nrow(type.mat)){
   type.mat[z,which(colnames(type.mat)==svdat$cond.type[z])]<- 1
-  }
+}
 
 type.mat.final<- type.mat[,-1]
 
@@ -246,25 +245,24 @@ fit7<- GLMBoost(Xfull[,-1],Y,penalty= 100,stepno=100,  trace = T,  family=binomi
 
 #xfull and Y already defined 
 
+
 ########### BART ########### 
 # BART = Bayesian Adaptive Regression Trees
 # Lines 130-131
 
-#install.packages("BayesTree")
-library(BayesTree)
-fit8<- bart(x.train=Xfull, y.train=factor(Y), x.test=Xtfull, ndpost=1000, nskip=500, usequants=T)
-
-
 ## defining xtfull
 
-Xtfull <- model.matrix(~Xt*treatt) #line 56 of SLF
 Xt<- covs #line 432 of rep code 
 #covs is defined in lasso section 
 
 treatt<- treats #line 432 of rep code 
 #treats defined in lasso section 
 
+Xtfull <- model.matrix(~Xt*treatt) #line 56 of SLF
 
+#install.packages("BayesTree")
+library(BayesTree)
+fit8<- bart(x.train=Xfull, y.train=factor(Y), x.test=Xtfull, ndpost=1000, nskip=500, usequants=T)
 
 
 ######  Random Forest #######
