@@ -5,11 +5,11 @@
 ##############
 #defining x varaible in partions 
 
-Xfull <- model.matrix(~covs*treat)
+Xfull<-Xtfull <- model.matrix(~covs*treat)
 
 Xfull_1 <-model.matrix(~covsfull_1*treatfull_1)
 
-xtest<- model.matrix(~covstest_1*treattest_1)
+xtest_1<- model.matrix(~covstest_1*treattest_1)
 
 fit8<- bart(x.train=Xfull, y.train=factor(Y), x.test=Xtfull, ndpost=1000, nskip=500, usequants=T)
 
@@ -23,7 +23,7 @@ fit8<- bart(x.train=Xfull_1, y.train=factor(Yfull_1), x.test=xtest_1, ndpost=100
 
 
 
-covstest_1 <- covs[c(1:107),]
+covstest_1 <- covs[c(0:107),]
 
 covstest_2<- covs[c(108:215),]
 covstest_3<- covs[c(216:323),]
@@ -55,7 +55,7 @@ covsfull<-cbind(covsfull_1,covsfull_2,covsfull_3,covsfull_4,covsfull_5,covsfull_
 
 
 ####def of 1/10 for treat
-treattest_1 <- treat[c(1:107),]
+treattest_1 <- treat[c(0:107),]
 treattest_2<- treat[c(108:215),]
 treattest_3<- treat[c(216:323),]
 treattest_4<-treat[c(324:431),]
@@ -85,7 +85,9 @@ treatfull_10 <- treat[-treattest_10,]
 #################
 #def y in partions 
 
-Yfull_1<- ifelse(svdat[-c(1:107),]$approval<3, 1, 0)
+
+
+Yfull_1<- ifelse(svdat[-c(0:107),]$approval<3, 1, 0)
 Yfull_2<- ifelse(svdat[-c(108:215),]$approval<3, 1, 0)
 Yfull_3<- ifelse(svdat[-c(216:323),]$approval<3, 1, 0)
 Yfull_4<- ifelse(svdat[-c(324:431),]$approval<3, 1, 0)
