@@ -67,6 +67,19 @@ treatfull <-
 #################
 #def y in portions 
 
+Ytest_1<- ifelse(svdat[c(1:107),]$approval<3, 1, 0)
+Ytest_2<- ifelse(svdat[c(108:215),]$approval<3, 1, 0)
+Ytest_3<- ifelse(svdat[c(216:323),]$approval<3, 1, 0)
+Ytest_4<- ifelse(svdat[c(324:431),]$approval<3, 1, 0)
+Ytest_5<- ifelse(svdat[c(432:539),]$approval<3, 1, 0)
+Ytest_6<- ifelse(svdat[c(540:647),]$approval<3, 1, 0)
+Ytest_7<- ifelse(svdat[c(648:755),]$approval<3, 1, 0)
+Ytest_8<- ifelse(svdat[c(756:863),]$approval<3, 1, 0)
+Ytest_9<- ifelse(svdat[c(864:971),]$approval<3, 1, 0)
+Ytest_10<- ifelse(svdat[c(972:1074),]$approval<3, 1, 0)
+
+
+
 Yfull_1<- ifelse(svdat[-c(1:107),]$approval<3, 1, 0)
 Yfull_2<- ifelse(svdat[-c(108:215),]$approval<3, 1, 0)
 Yfull_3<- ifelse(svdat[-c(216:323),]$approval<3, 1, 0)
