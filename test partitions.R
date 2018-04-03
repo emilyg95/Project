@@ -1,35 +1,9 @@
 #making 10 portions 
 
-
-<<<<<<< HEAD:test partions.R
-
 ##############
-#defining x varaible in partions 
-
-Xfull<-Xtfull <- model.matrix(~covs*treat)
-
-Xfull_1 <-model.matrix(~covsfull_1*treatfull_1)
-
-xtest_1<- model.matrix(~covstest_1*treattest_1)
-
-fit8<- bart(x.train=Xfull, y.train=factor(Y), x.test=Xtfull, ndpost=1000, nskip=500, usequants=T)
-
-
-fit8<- bart(x.train=Xfull_1, y.train=factor(Yfull_1), x.test=xtest_1, ndpost=1000, nskip=500, usequants=T)
-##doesn't work
-
-
-
 #Def of 1/10 for covs
-
-
-
-covstest_1 <- covs[c(0:107),]
-
-=======
-  #Def of 1/10 for covs
   
-  covstest_1 <- covs[c(1:107),]
+covstest_1 <- covs[c(1:107),]
 covstest_2<- covs[c(108:215),]
 covstest_3<- covs[c(216:323),]
 covstest_4<- covs[c(324:431),]
@@ -39,7 +13,6 @@ covstest_7<- covs[c(648:755),]
 covstest_8<- covs[c(756:863),]
 covstest_9<- covs[c(864:971),]
 covstest_10<- covs[c(972:1074),]
-
 
 
 # Def of 9/10 for covs
@@ -56,9 +29,7 @@ covsfull_9 <- covs[-c(864:971),]
 covsfull_10 <- covs[-c(972:1074),]
 
 
-
 ####def of 1/10 for treat
-
 
 treattest_1 <- treat[c(1:107),]
 treattest_2<- treat[c(108:215),]
@@ -70,7 +41,6 @@ treattest_7<- treat[c(648:755),]
 treattest_8<- treat[c(756:863),]
 treattest_9<- treat[c(864:971),]
 treattest_10<- treat[c(972:1074),]
-
 
 
 # Def of 9/10 for treat
@@ -86,11 +56,20 @@ treatfull_8 <- treat[-c(756:863),]
 treatfull_9 <- treat[-c(864:971),]
 treatfull_10 <- treat[-c(972:1074),]
 
-treatfull <- 
-  
-  #################
+
+#################
 #def y in portions 
 
+Ytest_1<- ifelse(svdat[c(1:107),]$approval<3, 1, 0)
+Ytest_2<- ifelse(svdat[c(108:215),]$approval<3, 1, 0)
+Ytest_3<- ifelse(svdat[c(216:323),]$approval<3, 1, 0)
+Ytest_4<- ifelse(svdat[c(324:431),]$approval<3, 1, 0)
+Ytest_5<- ifelse(svdat[c(432:539),]$approval<3, 1, 0)
+Ytest_6<- ifelse(svdat[c(540:647),]$approval<3, 1, 0)
+Ytest_7<- ifelse(svdat[c(648:755),]$approval<3, 1, 0)
+Ytest_8<- ifelse(svdat[c(756:863),]$approval<3, 1, 0)
+Ytest_9<- ifelse(svdat[c(864:971),]$approval<3, 1, 0)
+Ytest_10<- ifelse(svdat[c(972:1074),]$approval<3, 1, 0)
 
 
 Yfull_1<- ifelse(svdat[-c(0:107),]$approval<3, 1, 0)
