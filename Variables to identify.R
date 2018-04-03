@@ -150,6 +150,8 @@ Y<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code
 ## ? cv.glmnet()
 
 #install.packages("glmnet")
+
+#Automatically does cross validation 
 library(glmnet)
 # Alpha = 1 is same as lasso 
 fit1<- cv.glmnet(y = Y, x= Xfull, alpha=1, family='binomial', type='mse')
