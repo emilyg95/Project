@@ -23,6 +23,7 @@ install.packages("RWeka")
 
 # Set WD as needed: 
 setwd("C:/Users/jgros/documents/GitHub/Project/")
+setwd("/Users/emilygarner/Documents/School/Second Sem/R/Project")
 load("Het_Experiment.Rdata")
 
 dem<- ifelse(svdat$pid3l=='Dem', 1, 0)  #line 366-369 of rep code

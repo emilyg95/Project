@@ -60,7 +60,12 @@ fit8<- bart(x.train=Xfull_1, y.train=factor(Yfull_1), x.test=Xtest_1, ndpost=100
 #Show how to use predict
 
 library(glmnet)
-# Alpha = 1 is same as lasso 
+# Alpha = 1 is same as lasso
+
+Yfull_1<- ifelse(svdat[-c(1:107),]$approval<3, 1, 0)
+
+Xfull_1 <-model.matrix(~covsfull_1*treatfull_1)
+
 fit1<- cv.glmnet(y = Yfull_1, x= Xfull_1, alpha=1, family='binomial', type='mse')
 
 best.lambda = fit1$lambda.min

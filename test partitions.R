@@ -1,4 +1,9 @@
-#making 10 portions 
+##making 10 portions 
+
+covs_r = cbind(covs, "random" = sample(1:1074, 1074))
+covs_r = as.data.frame(covs_r)
+covs_r <- covs_r[order(covs_r$random),] 
+covs_r
 
 ##############
 #Def of 1/10 for covs
