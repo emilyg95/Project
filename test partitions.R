@@ -1,9 +1,18 @@
 ##making 10 portions 
 
-covs_r = cbind(covs, "random" = sample(1:1074, 1074))
-covs_r = as.data.frame(covs_r)
+#random ordering
+
+covs_r <- cbind(covs, "random" = sample(1:1074, 1074))
+covs_r <- as.data.frame(covs_r)
 covs_r <- covs_r[order(covs_r$random),] 
+covs_r$random <- NULL
 covs_r
+
+#automated sampling
+
+covs_sample <- sample.int(n = nrow(covs_r), size = floor(.9*nrow(covs_r)), replace = F)
+covs_train <- covs_r[covs_sample, ]
+covs_test  <- covs_r[-covs_sample, ]
 
 ##############
 #Def of 1/10 for covs
