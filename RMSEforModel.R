@@ -206,13 +206,15 @@ Xfull <- model.matrix(~X*treat)
 #line 432 of rep code 
 Y<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
 
+# One Query
 RMSEforModel(Xfull,Y)
 
-# 
-# indexes = 1:1074
-# testindexes = matrix(numeric())
-# for (i in 1:10){
-#   want.sample = as.integer( 1/(11-i) * length(indexes))
-#   testindexes[,i] = sample(want.sample,indexes)
-#   indexes = indexes[-testindexes]
-# }
+
+# With Cross Validation
+indexes = 1:1074
+indexes = sample(indexes)
+indexes.matrix = matrix(indexes,nrow=10)
+
+for (i in 1:10){
+  results = RMSEforModel(Xfull,Y,indexes.matrix[i,])
+}
