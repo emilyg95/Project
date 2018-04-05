@@ -1,9 +1,9 @@
-RMSEforModel = function(x,y){
+RMSEforModel = function(x,y, test.indexes){
  # NOTE: THIS IS NOT DOING CROSS-VALIDATION right now (for most models)
     
-  test.indexes = sample(1074,107)
-  x.train = x[-test.indexes]
-  x.test = x[test.indexes]
+  #test.indexes = sample(1074,107)
+  x.train = x[-test.indexes,]
+  x.test = x[test.indexes,]
   y.train = y[-test.indexes]
   y.test = y[test.indexes]
     
@@ -63,13 +63,13 @@ RMSEforModel = function(x,y){
   library(BayesTree)
   fit8<- bart(x.train=x.train, y.train=factor(y.train), x.test=x.test, ndpost=1000, nskip=500, usequants=T)
   fit8.pred<- pnorm(apply(fit8$yhat.test, 2, mean))
-  fit8.rmse = sqrt(mean((fit8.pred-y.train)^2))
+  fit8.rmse = sqrt(mean((fit8.pred-y.test)^2))
   
   # Fit 9  = RandomForest
   library(randomForest)
   fit9<- randomForest(y = factor(y.train), x = x.train)
-  X.test.forest = X.test
-  `colnames<-`(X.test,colnames(x.train))
+  X.test.forest = x.test
+  `colnames<-`(X.test.forest,colnames(x.train))
   #Only works for X.test??
   fit9.pred.raw = predict(fit9,newdata = X.test.forest,type = "prob" )
   fit9.pred = fit9.pred.raw[,2]
@@ -106,3 +106,112 @@ RMSEforModel = function(x,y){
   
 }
 
+
+
+
+setwd("C:/Users/jgros/documents/GitHub/Project/")
+load("Het_Experiment.Rdata")
+
+dem<- ifelse(svdat$pid3l=='Dem', 1, 0)  #line 366-369 of rep code
+dem[which(is.na(dem))]<- 0
+rep<- ifelse(svdat$pid3l=='Rep', 1, 0)
+rep[which(is.na(rep))]<- 0
+
+cons<- ifelse(svdat$ideo3<3, 1, 0) #line 230-231 of rep code
+lib<- ifelse(svdat$ideo3==4|svdat$ideo3==5, 1, 0)
+
+lib[which(is.na(lib))]<- 0 #line 370-371 of rep code 
+cons[which(is.na(cons))]<- 0
+
+
+############ Defining treats
+
+type.mat<- matrix(0, nrow = 1074, ncol=7)
+colnames(type.mat)<- sort(unique(as.character(svdat$cond.type)))
+for(z in 1:nrow(type.mat)){
+  type.mat[z,which(colnames(type.mat)==svdat$cond.type[z])]<- 1
+}
+
+type.mat.final<- type.mat[,-1]
+
+
+types<- sort(unique(as.character(svdat$cond.type)))
+type.num<- match(svdat$cond.type, types)
+number<- c('control', '$20 million', '$50 thousand')
+amount.num<- match(svdat$cond.money, number)
+request<- c('control', 'requested', 'secured', 'will request')
+stage.num<- match(svdat$cond.stage, request)
+party<- c('control', 'a Republican', 'a Democrat')
+party.num<- match(svdat$cond.party, party)
+along<- c('control', 'alone', 'w/ Rep', 'w/ Dem')
+along.num<- match(svdat$cond.alongWith, along)
+
+
+num.mat<- matrix(0, nrow=1074, ncol=3)
+colnames(num.mat)<- number
+for(z in 1:nrow(num.mat)){
+  num.mat[z,which(colnames(num.mat)==svdat$cond.money[z])]<- 1
+}
+num.mat.final<- num.mat[,-1]
+
+stage.mat<- matrix(0, nrow=1074, ncol=4)
+colnames(stage.mat)<- request
+for(z in 1:nrow(stage.mat)){
+  stage.mat[z,which(colnames(stage.mat)==svdat$cond.stage[z])]<- 1
+}
+
+stage.mat.final<- stage.mat[,-1]
+
+party.mat<- matrix(0, nrow=1074, ncol=3)
+colnames(party.mat)<- party
+for(z in 1:nrow(party.mat)){
+  party.mat[z, which(colnames(party.mat)==svdat$cond.party[z])]<- 1
+}
+
+party.mat.final<- party.mat[,-1]	
+
+along.mat<- matrix(0, nrow=1074, ncol=4)
+colnames(along.mat)<- 	along
+for(z in 1:nrow(along.mat)){
+  along.mat[z,which(colnames(along.mat)==svdat$cond.alongWith[z])]<- 1
+}
+
+along.mat.final<- along.mat[,-1]	
+
+
+treats<- cbind(type.mat.final, num.mat.final[,1], stage.mat.final[,1:2],party.mat.final[,1], 
+               along.mat.final[,1:2], type.mat.final[,1:5]*num.mat.final[,1], type.mat.final[,1:5]*stage.mat.final[,1], 
+               type.mat.final[,1:5]*stage.mat.final[,2], type.mat.final[,1:5]*party.mat.final[,1], type.mat.final[,1:5]*along.mat.final[,1],
+               type.mat.final[,1:5]*along.mat.final[,2], num.mat.final[,1]*stage.mat.final[,1], num.mat.final[,1]*stage.mat.final[,2], 
+               num.mat.final[,1]*party.mat.final[,1], num.mat.final[,1]*along.mat.final[,1], num.mat.final[,1]*along.mat.final[,2],
+               stage.mat.final[,1:2]*party.mat.final[,1], stage.mat.final[,1:2]*along.mat.final[,1], 
+               stage.mat.final[,1:2]*along.mat.final[,2], party.mat.final[,1]*along.mat.final[,1], party.mat.final[,1]*along.mat.final[,2] )
+
+
+treat<- treats #line 448 of rep code 
+
+
+### Defining the X variable 
+covs<- cbind(dem, rep, lib, cons) #line 373 of rep code 
+X <- covs #line 432 of repcode 
+Xfull <- model.matrix(~X*treat)
+
+
+## line 391 of rep code 
+
+
+#Defining the Y variable 
+
+#line 432 of rep code 
+Y<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
+
+RMSEforModel(Xfull,Y)
+
+
+indexes = 1:1074
+testindexes = matrix(numeric())
+for (i in 1:10){
+  want.sample = as.integer( 1/(11-i) * length(indexes))
+  testindexes[,i] = sample(want.sample,indexes)
+  indexes = indexes[-testindexes]
+}

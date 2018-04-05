@@ -157,8 +157,8 @@ library(glmnet)
 fit1<- cv.glmnet(y = Y, x= Xfull, alpha=1, family='binomial', type='mse')
 # Elastic Net, Alpha = .5
 fit2<- cv.glmnet(y = Y, x= Xfull, alpha=0.5, family='binomial', type='mse')
-# Elastic Net, Alpha = .2 5
-fit3<- cv.glmnet(y = Y, x= Xfull, alpha=0.15, family='binomial', type='mse')
+# Elastic Net, Alpha = .25
+fit3<- cv.glmnet(y = Y, x= Xfull, alpha=0.25, family='binomial', type='mse')
 fit4<- cv.glmnet(y = Y, x= Xfull, alpha=0, family='binomial', type='mse')
 
 
