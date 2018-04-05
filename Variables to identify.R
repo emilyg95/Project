@@ -10,14 +10,14 @@
 ################## Setup ###############
 ## Packages you will need to install (uncomment and run this section once):
 ## You can uncomment all lines at once by highlighting the lines, then ctrl+shift+c
-install.packages("glmnet")
-install.packages("FindIt")
-install.packages("arm")
-install.packages("GAMBoost")
-install.packages("mboost")
-install.packages("KRLS")
-install.packages("rJava")
-install.packages("RWeka")
+#install.packages("glmnet")
+#install.packages("FindIt")
+#install.packages("arm")
+#install.packages("GAMBoost")
+#install.packages("mboost")
+#install.packages("KRLS")
+#install.packages("rJava")
+#install.packages("RWeka")
 
 ############# different def of covs on line 863 of rep code. Investigate this 
 
