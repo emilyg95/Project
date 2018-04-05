@@ -10,6 +10,10 @@ data_r <- as.data.frame(data_r)
 data_r <- data_r[order(data_r$random),] 
 data_r$random <- NULL
 data_r <- data
+covs <- data[,1:4]
+treat <- data[,5:59]
+Y  <- data[,60]
+
 
 #automated sampling
 
