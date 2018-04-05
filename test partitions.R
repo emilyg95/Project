@@ -2,11 +2,14 @@
 
 #random ordering
 
-covs_r <- cbind(covs, "random" = sample(1:1074, 1074))
-covs_r <- as.data.frame(covs_r)
-covs_r <- covs_r[order(covs_r$random),] 
-covs_r$random <- NULL
-covs_r
+Y = ifelse(svdat$approval<3, 1, 0)
+data <- cbind(covs, treat, Y)
+set.seed(100)
+data_r <- cbind(data, "random" = sample(1:1074, 1074))
+data_r <- as.data.frame(data_r)
+data_r <- data_r[order(data_r$random),] 
+data_r$random <- NULL
+data_r <- data
 
 #automated sampling
 
