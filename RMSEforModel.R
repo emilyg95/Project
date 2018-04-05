@@ -1,4 +1,4 @@
-RMSEforModel = function(x,y, test.indexes){
+RMSEforModel = function(x,y, test.indexes = sample(length(y),as.integer(length(y)/10))){
  # NOTE: THIS IS NOT DOING CROSS-VALIDATION right now (for most models)
     
   #test.indexes = sample(1074,107)
@@ -89,8 +89,9 @@ RMSEforModel = function(x,y, test.indexes){
   .jinit(parameters="-Xmx4g")
   library(RWeka)
   subset.index = (1:length(y))[-test.indexes]
-  fit12 <- SMO(y ~ ., data = data.frame(Y=factor(y),x), control = Weka_control(M = TRUE ) , subset = subset.index)
-  #fit12 <- SMO(Y ~ ., data = data.frame(Y=factor(Y),Xfull), control = Weka_control(M = TRUE ) , subset = ((1:1074)[-test.indexes]))
+  fit12 <- SMO(y ~ ., data = data.frame(y=factor(y),x), control = Weka_control(M = TRUE ) , subset = subset.index)
+  
+   #fit12 <- SMO(Y ~ ., data = data.frame(Y=factor(Y),Xfull), control = Weka_control(M = TRUE ) , subset = ((1:1074)[-test.indexes]))
   fit12.predict =predict(fit12, newdata= data.frame(x[test.indexes,]), type="probability" )[,2] 
   fit12.RMSE = sqrt(mean((fit12.predict-y.test)^2))
   
@@ -207,11 +208,11 @@ Y<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code
 
 RMSEforModel(Xfull,Y)
 
-
-indexes = 1:1074
-testindexes = matrix(numeric())
-for (i in 1:10){
-  want.sample = as.integer( 1/(11-i) * length(indexes))
-  testindexes[,i] = sample(want.sample,indexes)
-  indexes = indexes[-testindexes]
-}
+# 
+# indexes = 1:1074
+# testindexes = matrix(numeric())
+# for (i in 1:10){
+#   want.sample = as.integer( 1/(11-i) * length(indexes))
+#   testindexes[,i] = sample(want.sample,indexes)
+#   indexes = indexes[-testindexes]
+# }
