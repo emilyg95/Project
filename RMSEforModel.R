@@ -210,6 +210,8 @@ Xfull <- model.matrix(~X*treat)
 Y<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
 
 # One Query
+
+list_test<-RMSEforModel(Xfull,Y)
 df<-RMSEforModel(Xfull,Y)
 
 
@@ -222,16 +224,21 @@ indexes.matrix = matrix(indexes,nrow=10)
 
 #Makes data frame with all 10 RMSE
 
-for(i in 1:10){
+
+df<-RMSEforModel(Xfull,Y)
+for(i in 1:2){
   df$i <-RMSEforModel(Xfull,Y,indexes.matrix[i,])
+  df <- as.matrix(df)
 }
 
+fold <- sample(nfold, nrow(X), replace = T)
+preds.var <- matrix(NA, nrow=nrow(X),ncol=2) #should be 12 cols?
+for(i in 1:2){
+  preds.var[i,] <- RMSEforModel(Xfull,Y,indexes.matrix[i,])
+  
+}
 
-
-
-
-
-
+print("test")
 
 
 

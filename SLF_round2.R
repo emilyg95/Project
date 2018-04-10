@@ -75,9 +75,9 @@ wrap.func <- function(X, Y, treat, Xt, Yt, treatt, speed=T){
 	
 	# Next FindIt
 #	install.packages("FindIt")
-if(speed==F){
-	print("Fitting FindIt.. ")
-	library(FindIt)
+#if(speed==F){
+	#print("Fitting FindIt.. ")
+	#library(FindIt)
 	
 	# This is how FindIt is supposed to run, with two-way interactions
 	# between all relevant factors in X.  
@@ -91,25 +91,25 @@ if(speed==F){
 	
 	# instead, we will only use the X matrix + all treatment ints.
 	# First, we transform Y into -1,1 from 0,1
-	FIY <- Y
-	FIY[FIY==0] <- -1
+#	FIY <- Y
+#	FIY[FIY==0] <- -1
 	
-	if(is.null(ncol(treat))==F){
-		colnames(Xstd)<- paste('Cov', 1:ncol(Xstd), sep='')
-		colnames(treat)<- as.character(1:ncol(treat))
-		start<- model.matrix(~Xstd*treat)
-		treat2<- start[,which(colnames(start)=='treat1'):ncol(start)]
-	fit5 <- FindIt(FIY,X.c=Xstd, treat2, type='multiple',
-			scale.c= SDsToRescaleX, 
-			search.lambdas=TRUE, 
-			fit.glmnet=TRUE,wts=1) }
-	if(is.null(ncol(treat)) == T){
-		colnames(Xstd)<- paste('Cov', 1:ncol(Xstd), sep='')
-		fit5 <- FindIt(FIY,X.c=Xstd, treat, type='single',
-			scale.c= SDsToRescaleX, 
-			search.lambdas=TRUE, 
-			fit.glmnet=TRUE, wts=1)	}
-	}
+#	if(is.null(ncol(treat))==F){
+#		colnames(Xstd)<- paste('Cov', 1:ncol(Xstd), sep='')
+#		colnames(treat)<- as.character(1:ncol(treat))
+#		start<- model.matrix(~Xstd*treat)
+#		treat2<- start[,which(colnames(start)=='treat1'):ncol(start)]
+#	fit5 <- FindIt(FIY,X.c=Xstd, treat2, type='multiple',
+#			scale.c= SDsToRescaleX, 
+#			search.lambdas=TRUE, 
+#			fit.glmnet=TRUE,wts=1) }
+#	if(is.null(ncol(treat)) == T){
+#		colnames(Xstd)<- paste('Cov', 1:ncol(Xstd), sep='')
+#		fit5 <- FindIt(FIY,X.c=Xstd, treat, type='single',
+#			scale.c= SDsToRescaleX, 
+#			search.lambdas=TRUE, 
+#			fit.glmnet=TRUE, wts=1)	}
+#	}
 	# This crap is too slow, but could be added back in if we don't care about time.
 	##the next function is bayesglm from Gelman's program
 	
@@ -223,6 +223,8 @@ if(speed==F){
 	return(list(pred.vals, fits))
 }
 
+
+wrap.func()
 
 supLearnFit <- function(X, treats, Y, nfold = 10, speed=T){
 	
