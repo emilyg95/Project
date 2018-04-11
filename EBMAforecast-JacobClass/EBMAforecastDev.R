@@ -1,9 +1,10 @@
 library(devtools); library(roxygen2); library(testthat)
 
-setwd("~/Documents/GitHub/EBMAforecast1/rcpp_pack")
+setwd("~/Documents/GitHub/Project/EBMAforecast1/rcpp_pack")
 
+setwd("C:/Users/jgros/Documents/GitHub/Project/EBMAforecast-JacobClass/rcpp_pack")
 ## Only need to run this portion once
-# update_collate("EBMAforecast")
+update_collate("EBMAforecast")
 
 current.code <- as.package("EBMAforecast")
 load_all(current.code)
@@ -23,7 +24,7 @@ build_win(current.code)
 # Check demo
 demo(EBMAforecast)
 demo(presForecast)
-W
+
 # take a look at the help files
 help(EBMAforecast)
 help(makeForecastData)
