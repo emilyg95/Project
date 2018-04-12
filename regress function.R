@@ -4,7 +4,7 @@ regress.func <- function(Y, preds.var){
   orgcols <- length(preds.var[1,])
   notNA <- which(!is.na(preds.var[1,]))
   predX <- preds.var[,notNA ]
-  predX <-predX[1:1074,]
+  predX <-predX[1:1074,]#had to het rid of NA's. Also make same number of rows as Y
   
   library(quadprog)
   d.mat <- solve(chol(t(predX)%*%predX))
