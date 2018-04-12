@@ -1,0 +1,28 @@
+regress.func <- function(Y, preds.var){
+  
+  # need to smartly figure out which columns are not NA 
+  orgcols <- length(preds.var[1,])
+  notNA <- which(!is.na(preds.var[1,]))
+  predX <- preds.var[,notNA ]
+  predX <-predX[1:1074,]
+  
+  library(quadprog)
+  d.mat <- solve(chol(t(predX)%*%predX))
+  a.mat <- cbind(rep(1, ncol(predX)), diag(ncol(predX)))
+  b.vec <- c(1, rep(0, ncol(predX)))
+  d.vec <- t(Y) %*% predX #doesn't like diff number of rows
+  out<- solve.QP(Dmat = d.mat, factorized =TRUE, dvec = d.vec, Amat = a.mat, bvec = b.vec, meq = 1)
+  coefs <- rep(NA, orgcols)
+  notDel <- c(1:orgcols)[notNA]#[notCor]
+  coefs[notDel] <- out$solution
+  return(coefs)
+}
+
+regress.func(Y, preds.in.order)
+
+# results: 
+# 6.692491e-02 1.519383e-17 8.604935e-17 0.000000e+00 2.286355e-17 1.895841e-02
+# 1.517385e-17 4.456654e-02 8.695501e-01
+
+
+

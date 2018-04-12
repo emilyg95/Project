@@ -15,11 +15,11 @@ RMSEforModel = function(x,y, test.indexes = sample(length(y),as.integer(length(y
     return(ff)
   }
   
+  ##### Take out this Cross-Validation -- just do CV onces for everything to make run faster
   # Lasso
   fit1<- cv.glmnet(x = x.train, y = y.train, alpha=1, family='binomial', type='mse')
   best.lambda = fit1$lambda.min
   fit1.predict = predict(fit1, s= best.lambda, newx = x.test)
-  #fit1.RMSE = sqrt(mean((fit1.predict-y.test)^2))
   fit1.logistPred = logist(fit1.predict)
   fit1.logistPred.RMSE = sqrt(mean((fit1.logistPred-y.test)^2))
   
@@ -28,7 +28,6 @@ RMSEforModel = function(x,y, test.indexes = sample(length(y),as.integer(length(y
   fit2<- cv.glmnet(y = y.train, x= x.train, alpha=0.5, family='binomial', type='mse')
   best.lambda = fit2$lambda.min
   fit2.predict = predict(fit2, s= best.lambda, newx = x.test)
-  #fit2.RMSE = sqrt(mean((fit2.predict-y.test)^2))
   fit2.logistPred = logist(fit2.predict)
   fit2.logistPred.RMSE = sqrt(mean((fit2.logistPred-y.test)^2))
 
@@ -36,7 +35,6 @@ RMSEforModel = function(x,y, test.indexes = sample(length(y),as.integer(length(y
   fit3<- cv.glmnet(y = y.train, x= x.train, alpha=0.25, family='binomial', type='mse')
   best.lambda = fit3$lambda.min
   fit3.predict = predict(fit3, s= best.lambda, newx = x.test)
-  #fit3.RMSE = sqrt(mean((fit3.predict-y.test)^2))
   fit3.logistPred = logist(fit3.predict)
   fit3.logistPred.RMSE = sqrt(mean((fit3.logistPred-y.test)^2))
   
@@ -46,16 +44,10 @@ RMSEforModel = function(x,y, test.indexes = sample(length(y),as.integer(length(y
   ## Skipping FindIt since documentation changed (per)
 
   # Bayesian GLM -- Revisit -- probably not working right
-  #Not sure if I should directly predict via linear estiamtion, or use a logistic regression
-  # Prediction Function Doesn't really work for this
-  #install.packages("arm")
   library(arm)
   fit6<- bayesglm(y.train~x.train-1, family=binomial(link=logit))
-  #fit6.predict = x.test%*%fit6$coefficients
-  fit6.predict2 = logist(x.test%*%fit6$coefficients)
-  #fit6.1 = bayesglm(y~x-1, family=binomial(link=logit))
-  #fit6.RMSE = sqrt(mean(resid(fit6.1)^2))
-  fit6.logistPred.RMSE = sqrt(mean((fit6.predict2-y.test)^2))
+  fit6.predict = logist(x.test%*%fit6$coefficients)
+  fit6.logistPred.RMSE = sqrt(mean((fit6.predict-y.test)^2))
   
   # Fit 7 = Boosted Trees is not published ### SKipping
   
@@ -70,7 +62,6 @@ RMSEforModel = function(x,y, test.indexes = sample(length(y),as.integer(length(y
   fit9<- randomForest(y = factor(y.train), x = x.train)
   X.test.forest = x.test
   `colnames<-`(X.test.forest,colnames(x.train))
-  #Only works for X.test??
   fit9.pred.raw = predict(fit9,newdata = X.test.forest,type = "prob" )
   fit9.pred = fit9.pred.raw[,2]
   fit9.rmse = sqrt(mean((fit9.pred-y.test)^2))
@@ -85,36 +76,33 @@ RMSEforModel = function(x,y, test.indexes = sample(length(y),as.integer(length(y
   fit11.rmse = sqrt(mean((fit11.predict-y.test)^2))
   
   # Fit 12 = SVM-SMO
- # library(rJava)
-#  .jinit(parameters="-Xmx4g")
- # library(RWeka)
-#  subset.index = (1:length(y))[-test.indexes]
- # fit12 <- SMO(y ~ ., data = data.frame(y=factor(y),x), control = Weka_control(M = TRUE ) , subset = subset.index)
-  
-   #fit12 <- SMO(Y ~ ., data = data.frame(Y=factor(Y),Xfull), control = Weka_control(M = TRUE ) , subset = ((1:1074)[-test.indexes]))
- # fit12.predict =predict(fit12, newdata= data.frame(x[test.indexes,]), type="probability" )[,2] 
-#  fit12.RMSE = sqrt(mean((fit12.predict-y.test)^2))
+  library(rJava)
+  .jinit(parameters="-Xmx4g")
+  library(RWeka)
+  subset.index = (1:length(y))[-test.indexes]
+  fit12 <- SMO(y ~ ., data = data.frame(y=factor(y),x), control = Weka_control(M = TRUE ) , subset = subset.index)
+  fit12.predict =predict(fit12, newdata= data.frame(x[test.indexes,]), type="probability" )[,2]
+  fit12.RMSE = sqrt(mean((fit12.predict-y.test)^2))
   
   
   # Fit 13 = Simple Mean
   fit13.predict = mean(y.train)
   fit13.RSME= sqrt(mean((fit13.predict-y.test)^2))
   
-  #"SVM-SMO",
-  models = rbind("Lasso", "Elastic Net (a = .5)","Elastic Net (a = .25)", "Bayesian GLM", "BART", "Random Forest", "KRLS",  "Simple Average")
-  #fit12.RMSE,
-  RMSE.all = rbind(fit1.logistPred.RMSE,fit2.logistPred.RMSE,fit3.logistPred.RMSE,fit6.logistPred.RMSE,fit8.rmse,fit9.rmse,fit11.rmse, fit13.RSME)
-  
-  #models,
-  return(data.frame(RMSE.all))
-  
+  models = rbind("Lasso", "Elastic Net (a = .5)","Elastic Net (a = .25)", "Bayesian GLM", "BART", "Random Forest", "KRLS", "SVM_SMO", "Simple Average")
+
+  Preds.All = cbind(fit1.logistPred,fit2.logistPred,fit3.logistPred,fit6.predict,fit8.pred,fit9.pred,fit11.predict, fit12.predict, fit13.predict)
+  #RMSE.all = rbind(fit1.logistPred.RMSE,fit2.logistPred.RMSE,fit3.logistPred.RMSE,fit6.logistPred.RMSE,fit8.rmse,fit9.rmse,fit11.rmse,fit12.RMSE, fit13.RSME)
+  colnames(Preds.All) = models
+  #return(data.frame(RMSE.all))
+  return(Preds.All)
 }
 
 
 
 
-#setwd("C:/Users/jgros/documents/GitHub/Project/")
-#load("Het_Experiment.Rdata")
+setwd("C:/Users/jgros/documents/GitHub/Project/")
+load("Het_Experiment.Rdata")
 
 dem<- ifelse(svdat$pid3l=='Dem', 1, 0)  #line 366-369 of rep code
 dem[which(is.na(dem))]<- 0
@@ -209,13 +197,19 @@ Xfull <- model.matrix(~X*treat)
 #line 432 of rep code 
 Y<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
 
+<<<<<<< HEAD
 # One Query
 
 list_test<-RMSEforModel(Xfull,Y)
 df<-RMSEforModel(Xfull,Y)
 
+=======
+# # One Query
+# df<-RMSEforModel(Xfull,Y)
+>>>>>>> 1f7358e7455812cb5d9c5a2eb221c161a9adddd8
 
 
+set.seed(100)
 # With Cross Validation
 indexes = 1:1074
 indexes = sample(indexes)
@@ -223,6 +217,7 @@ indexes.matrix = matrix(indexes,nrow=10)
 
 
 #Makes data frame with all 10 RMSE
+<<<<<<< HEAD
 
 
 df<-RMSEforModel(Xfull,Y)
@@ -239,6 +234,20 @@ for(i in 1:2){
 }
 
 print("test")
+=======
+preds = matrix(data = NA, ncol = 9);
+for(i in 1:10){
+  # df$i <-RMSEforModel(Xfull,Y,indexes.matrix[i,])
+  temp <-RMSEforModel(Xfull,Y,indexes.matrix[i,])
+  preds = rbind(preds,temp)
+}
+preds.in.order = preds[order(as.numeric(rownames(preds))),]
+
+
+
+
+
+>>>>>>> 1f7358e7455812cb5d9c5a2eb221c161a9adddd8
 
 
 
