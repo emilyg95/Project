@@ -61,12 +61,20 @@ OOSPredicts = function(x,y, test.indexes = sample(length(y),as.integer(length(y)
   # Fit 11 = KRLS
   # Gets errors if all vals in column have same value (i.e. all 0 or all 1)
   x.train.krls = x.train[,-1]
+  x.test.krls = x.test[,-1]
+  
+  bad.KRLS.index=numeric()
   sums = as.numeric(apply(x.train.krls,2,sum))
   bad.KRLS.index = which(sums==0)
-  bad.KRLS.index = c(bad, which(sums==dim(x.train.krls)[1]))
+  bad.KRLS.index = c(bad.KRLS.index, which(sums==dim(x.train.krls)[1]))
+  
+  if (length(bad.KRLS.index)>0){
   x.train.krls = x.train.krls[,-bad.KRLS.index]
+  x.test.krls = x.test.krls[,-bad.KRLS.index]
+  }
   fit11<- krls(X = x.train.krls, y = y.train, derivative=F)
-  fit11.predict = predict(fit11,newdata = x.test[,-1])$fit
+
+  fit11.predict = predict(fit11,newdata = x.test.krls )$fit
   
   # Fit 12 = SVM-SMO
    .jinit(parameters="-Xmx4g")
@@ -207,15 +215,15 @@ library(RWeka)
 # determine hyperparameters for glmnet models once, instead of reoptimizing hyperparameters via cross validation everytime
 
 # Lasso
-fit1<- cv.glmnet(x = x.train, y = y.train, alpha=1, family='binomial', type='mse')
+fit1<- cv.glmnet(x = Xfull.original, y = Y.original, alpha=1, family='binomial', type='mse')
 best.lambda1 = fit1$lambda.min
 
 # Elastic Net, Alpha = .5
-fit2<- cv.glmnet(y = y.train, x= x.train, alpha=0.5, family='binomial', type='mse')
+fit2<- cv.glmnet(y = Y.original, x= Xfull.original, alpha=0.5, family='binomial', type='mse')
 best.lambda2 = fit2$lambda.min
 
 # Elastic Net, Alpha = .25
-fit3<- cv.glmnet(y = y.train, x= x.train, alpha=0.25, family='binomial', type='mse')
+fit3<- cv.glmnet(y = Y.original, x= Xfull.original, alpha=0.25, family='binomial', type='mse')
 best.lambda3 = fit3$lambda.min
 
 ########################### Run Bootstapping #################################
