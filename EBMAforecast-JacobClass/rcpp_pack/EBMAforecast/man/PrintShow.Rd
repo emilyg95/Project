@@ -2,10 +2,11 @@
 % Please edit documentation in R/print_show.R
 \docType{methods}
 \name{print,SummaryForecastData-method}
-\alias{print,ForecastData-method}
 \alias{print,SummaryForecastData-method}
-\alias{show,ForecastData-method}
 \alias{show,SummaryForecastData-method}
+\alias{show,SummaryForecastData-method}
+\alias{print,ForecastData-method}
+\alias{show,ForecastData-method}
 \title{Print and Show methods for forecast data}
 \usage{
 \S4method{print}{SummaryForecastData}(x, digits = 3, ...)
@@ -42,12 +43,11 @@ print(summary.object)
 show(summary.object)
 }
 }
-\author{
-Michael D. Ward <\email{michael.d.ward@duke.edu}> and Jacob M. Montgomery <\email{jacob.montgomery@wustl.edu}> and Florian M. Hollenbach <\email{florian.hollenbach@tamu.edu}>
-}
 \references{
 Montgomery, Jacob M., Florian M. Hollenbach and Michael D. Ward. (2015). Calibrating ensemble forecasting models with sparse data in the social sciences.   \emph{International Journal of Forecasting}. \bold{31}: 930-942.
 
 Montgomery, Jacob M., Florian M. Hollenbach and Michael D. Ward. (2012). Improving Predictions Using Ensemble Bayesian Model Averaging. \emph{Political Analysis}. \bold{20}: 271-291.
 }
-
+\author{
+Michael D. Ward <\email{michael.d.ward@duke.edu}> and Jacob M. Montgomery <\email{jacob.montgomery@wustl.edu}> and Florian M. Hollenbach <\email{florian.hollenbach@tamu.edu}>
+}

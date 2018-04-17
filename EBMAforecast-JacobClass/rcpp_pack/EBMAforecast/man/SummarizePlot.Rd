@@ -3,10 +3,14 @@
 \docType{class}
 \name{SummaryForecastData-class}
 \alias{SummaryForecastData-class}
+\alias{summary,FDatFitLogit-method}
+\alias{summary,FDatFitNormal-method}
 \alias{plot,FDatFitLogit-method}
 \alias{plot,FDatFitNormal-method}
 \alias{summary,FDatFitLogit-method}
 \alias{summary,FDatFitNormal-method}
+\alias{plot,FDatFitLogit-method}
+\alias{plot,FDatFitNormal-method}
 \title{Summarize and Plot Ensemble models}
 \usage{
 \S4method{summary}{FDatFitLogit}(object, period = "calibration",
@@ -74,9 +78,6 @@ summary(this.ensemble, period="test",showCoefs=FALSE)
 }
 
 }
-\author{
-Michael D. Ward <\email{michael.d.ward@duke.edu}> and Jacob M. Montgomery <\email{jacob.montgomery@wustl.edu}> and Florian M. Hollenbach <\email{florian.hollenbach@tamu.edu}>
-}
 \references{
 Raftery, A. E., T. Gneiting, F. Balabdaoui and M. Polakowski. (2005). Using Bayesian Model Averaging to calibrate forecast ensembles. \emph{Monthly Weather Review}. \bold{133}:1155--1174.
 
@@ -86,4 +87,6 @@ Montgomery, Jacob M., Florian M. Hollenbach and Michael D. Ward. (2012). Improvi
 
 Montgomery, Jacob M., Florian M. Hollenbach and Michael D. Ward. (2015). Calibrating ensemble forecasting models with sparse data in the social sciences. \emph{International Journal of Forecasting}. \bold{31}:930–942.
 }
-
+\author{
+Michael D. Ward <\email{michael.d.ward@duke.edu}> and Jacob M. Montgomery <\email{jacob.montgomery@wustl.edu}> and Florian M. Hollenbach <\email{florian.hollenbach@tamu.edu}>
+}

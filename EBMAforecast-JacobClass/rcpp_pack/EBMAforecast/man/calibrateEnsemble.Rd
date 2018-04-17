@@ -39,11 +39,11 @@ fitEnsemble(.forecastData, tol = sqrt(.Machine$double.eps), maxIter = 1e+06,
 
 \item{whichW}{If W is a matrix of initial model weights, an integer denoting the row of weights to use in the final calibration. The default is the first row.}
 
-\item{iterations}{The number of iterations for the Bayseian model}
+\item{iterations}{The number of iterations for the Bayseian model. Default = 10000.}
 
-\item{burnin}{The burn in for the Gibbs sampler}
+\item{burnin}{The burn in for the Gibbs sampler. Default = 1000.}
 
-\item{thin}{How much the Gibbs sampler is thinned}
+\item{thin}{How much the Gibbs sampler is thinned. Default = 50.}
 }
 \value{
 Returns a data of class 'FDatFitLogit' or FDatFitNormal, a subclass of 'ForecastData', with the following slots
@@ -81,9 +81,6 @@ this.ensemble <- calibrateEnsemble(this.ForecastData, model="logit", tol=0.001, 
 }
 
 }
-\author{
-Michael D. Ward <\email{michael.d.ward@duke.edu}> and Jacob M. Montgomery <\email{jacob.montgomery@wustl.edu}> and Florian M. Hollenbach <\email{florian.hollenbach@tamu.edu}>
-}
 \references{
 Montgomery, Jacob M., Florian M. Hollenbach and Michael D. Ward. (2015). Calibrating ensemble forecasting models with sparse data in the social sciences.   \emph{International Journal of Forecasting}. 31(3): 930-942.
 
@@ -99,6 +96,8 @@ Sloughter, J. M., T. Gneiting and A. E. Raftery. (2010). Probabilistic wind spee
 
 Fraley, C., A. E. Raftery, and T. Gneiting. (2010). Calibrating multimodel forecast ensembles with exchangeable and missing members using Bayesian model averaging. \emph{Monthly Weather Review}. \bold{138}:190--202.
 }
+\author{
+Michael D. Ward <\email{michael.d.ward@duke.edu}> and Jacob M. Montgomery <\email{jacob.montgomery@wustl.edu}> and Florian M. Hollenbach <\email{florian.hollenbach@tamu.edu}>
+}
 \keyword{EBMA}
 \keyword{calibrate}
-

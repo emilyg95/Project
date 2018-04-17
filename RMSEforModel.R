@@ -102,6 +102,7 @@ RMSEforModel = function(x,y, test.indexes = sample(length(y),as.integer(length(y
 
 
 setwd("C:/Users/jgros/documents/GitHub/Project/")
+setwd("/Users/emilygarner/Documents/School/Second Sem/R/Project")
 load("Het_Experiment.Rdata")
 
 dem<- ifelse(svdat$pid3l=='Dem', 1, 0)  #line 366-369 of rep code
@@ -197,16 +198,13 @@ Xfull <- model.matrix(~X*treat)
 #line 432 of rep code 
 Y<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
 
-<<<<<<< HEAD
 # One Query
 
 list_test<-RMSEforModel(Xfull,Y)
 df<-RMSEforModel(Xfull,Y)
 
-=======
 # # One Query
 # df<-RMSEforModel(Xfull,Y)
->>>>>>> 1f7358e7455812cb5d9c5a2eb221c161a9adddd8
 
 
 set.seed(100)
@@ -217,8 +215,6 @@ indexes.matrix = matrix(indexes,nrow=10)
 
 
 #Makes data frame with all 10 RMSE
-<<<<<<< HEAD
-
 
 df<-RMSEforModel(Xfull,Y)
 for(i in 1:2){
@@ -234,7 +230,7 @@ for(i in 1:2){
 }
 
 print("test")
-=======
+
 preds = matrix(data = NA, ncol = 9);
 for(i in 1:10){
   # df$i <-RMSEforModel(Xfull,Y,indexes.matrix[i,])
@@ -244,10 +240,6 @@ for(i in 1:10){
 preds.in.order = preds[order(as.numeric(rownames(preds))),]
 
 
-
-
-
->>>>>>> 1f7358e7455812cb5d9c5a2eb221c161a9adddd8
 
 
 
