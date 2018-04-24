@@ -289,7 +289,6 @@ Names = c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", 
 ForecastData = makeForecastData(.predCalibration = preds.in.order, .outcomeCalibration = Y, .modelNames = Names)
 myCal<-calibrateEnsemble(ForecastData)
 myCal@modelWeights
-str(myCal)
 
 
 # Original Paper
