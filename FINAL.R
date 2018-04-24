@@ -283,12 +283,15 @@ run.time = finish.time-start.time
 
 # Montgomery
 
-install.packages("EBMAforecast")
+#install.packages("EBMAforecast")
 library(EBMAforecast)
 Names = c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest", "KRLS", "SVM_SMO", "Simple Average")
 ForecastData = makeForecastData(.predCalibration = preds.in.order, .outcomeCalibration = Y, .modelNames = Names)
 myCal<-calibrateEnsemble(ForecastData)
 myCal@modelWeights
+
+
+
 
 
 # Original Paper
@@ -311,5 +314,13 @@ regress.func <- function(Y, preds.var){
   coefs[notDel] <- out$solution
   return(coefs)
 }
+
+#makes matrix of all predicted weights 
+
+regress.func.results<- matrix(nrow = 500, ncol = 9)
+for(i in 1:500){
+  regress.func.results[i,] <- regress.func(Y, results[,,i])
+}
+
 
 
