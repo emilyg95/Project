@@ -283,13 +283,23 @@ run.time = finish.time-start.time
 
 # Montgomery
 
-install.packages("EBMAforecast")
+#install.packages("EBMAforecast")
 library(EBMAforecast)
 Names = c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest", "KRLS", "SVM_SMO", "Simple Average")
 ForecastData = makeForecastData(.predCalibration = preds.in.order, .outcomeCalibration = Y, .modelNames = Names)
 myCal<-calibrateEnsemble(ForecastData)
 myCal@modelWeights
-str(myCal)
+
+# matrix of predicted weights
+data_out <- data.frame()
+for(i in 1:500){
+  Names <- c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest", "KRLS", "SVM_SMO", "Simple Average")
+  results_slice <- results[,,i]
+  ForecastData <- makeForecastData(.predCalibration = results_slice, .outcomeCalibration = Y, .modelNames = Names)
+  myCal <- calibrateEnsemble(ForecastData)
+  weights <- myCal@modelWeights
+  rbind(data_out, weights)
+}
 
 
 # Original Paper
@@ -312,5 +322,37 @@ regress.func <- function(Y, preds.var){
   coefs[notDel] <- out$solution
   return(coefs)
 }
+#####
+
+set.seed(10)
+seednum = sample(10000,num.boostraps)
+Y.boostrap = matrix(nrow = 1074,ncol = 500)
+for (i in 1:num.boostraps){
+  set.seed(seednum[i])
+  bootstramp.sample.indexes = sample(1074,1074,replace = TRUE)
+  
+  ordered = bootstramp.sample.indexes[order(as.numeric(bootstramp.sample.indexes))]
+  
+  Y.boostrap[,i] = Y[ordered]
+
+}
 
 
+#makes matrix of all predicted weights 
+
+regress.func.results<- matrix(nrow = 500, ncol = 9)
+for(i in 1:500){
+  regress.func.results[i,] <- regress.func(Y.boostrap[,i], results[,,i])
+}
+
+
+
+error = numeric(9)
+for (i in 1:9){
+  error[i] =sd(regress.func.results[,i])
+}
+
+#####making the plot
+
+point.estimate <- regress.func(Y, preds.in.order)
+plot(point.estimate)
