@@ -314,13 +314,37 @@ regress.func <- function(Y, preds.var){
   coefs[notDel] <- out$solution
   return(coefs)
 }
+#####
+
+set.seed(10)
+seednum = sample(10000,num.boostraps)
+Y.boostrap = matrix(nrow = 1074,ncol = 500)
+for (i in 1:num.boostraps){
+  set.seed(seednum[i])
+  bootstramp.sample.indexes = sample(1074,1074,replace = TRUE)
+  
+  ordered = bootstramp.sample.indexes[order(as.numeric(bootstramp.sample.indexes))]
+  
+  Y.boostrap[,i] = Y[ordered]
+
+}
+
 
 #makes matrix of all predicted weights 
 
 regress.func.results<- matrix(nrow = 500, ncol = 9)
 for(i in 1:500){
-  regress.func.results[i,] <- regress.func(Y, results[,,i])
+  regress.func.results[i,] <- regress.func(Y.boostrap[,i], results[,,i])
 }
 
 
 
+error = numeric(9)
+for (i in 1:9){
+  error[i] =sd(regress.func.results[,i])
+}
+
+#####making the plot
+
+point.estimate <- regress.func(Y, preds.in.order)
+plot(point.estimate)

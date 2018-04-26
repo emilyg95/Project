@@ -23,5 +23,6 @@ regress.func(Y, preds.in.order)
 # results: 
 #3.660097e-01  9.006526e-17  0.000000e+00 -5.683887e-17  3.122957e-01  3.097471e-01  1.974784e-18  1.194746e-02
 
-
+x<- as.data.frame(results[,,1])
+ 
 
