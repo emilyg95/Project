@@ -100,14 +100,14 @@ colnames(montgomery_results) <- Names
 montgomery_results
 
 
-mean.coefs = numeric(8)
+mean_coefs_montgomery = numeric(8)
 error = numeric(8)
 for (i in 1:8){
   error[i] =sd(montgomery_results[,i])
-  mean.coefs[i] = mean(montgomery_results[,i])
+  mean_coefs_montgomery[i] = mean(montgomery_results[,i])
 }
 
-mean.coefs
+mean_coefs_montgomery
 
 
 #### all models ###############
@@ -168,14 +168,14 @@ for(i in 1:500){
 colnames(montgomery_results) <- Names
 montgomery_results
 
-mean.coefs = numeric(9)
+mean_coefs_montgomery = numeric(9)
 error = numeric(9)
 for (i in 1:9){
   error[i] =sd(montgomery_results[,i])
-  mean.coefs[i] = mean(montgomery_results[,i])
+  mean_coefs_montgomery[i] = mean(montgomery_results[,i])
 }
 
-mean.coefs
+mean_coefs_montgomery
 
 
 ##################### Plotting all models
