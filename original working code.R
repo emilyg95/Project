@@ -43,14 +43,28 @@ for(i in 1:500){
 }
 
 
-mean.coefs = numeric(8)
-error = numeric(8)
+mean.coefs_no7 = numeric(8)
+error_no7 = numeric(8)
 for (i in 1:8){
-  error[i] =sd(regress.func.results[,i])
-  mean.coefs[i] = mean(regress.func.results[,i])
+  error_no7[i] =sd(regress.func.results[,i])
+  mean.coefs_no7[i] = mean(regress.func.results[,i])
 }
 
-mean.coefs
+mean.coefs_no7
+error_no7
+
+##################### Plotting without model 7
+
+plotting_data_no7<- as.data.frame(mean.coefs_no7)
+upper_no7<-(mean.coefs_no7+ 1.96*error_no7)
+lower_no7<- (mean.coefs_no7 - 1.96*error_no7)
+
+ggplot(plotting_data_no7, aes(x = c(1:8), y = plotting_data_no7$mean.coefs)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymax = upper_no7, ymin = lower_no7))+ 
+  labs(title = "Model weights of Regression Ensamble \n(missing model 7)")+
+  ylab("Model Weights")+
+  xlab("Model")
 
 #### all models ###############
 
@@ -94,9 +108,6 @@ plotting_data<- as.data.frame(mean.coefs)
 upper<-(mean.coefs+ 1.96*error)
 lower<- (mean.coefs - 1.96*error)
 
-ggplot(data = plotting_data, mapping = aes(x = plotting_data, y = plotting_data$mean.coefs)) +
-  geom_point()
-
 ggplot(plotting_data, aes(x = c(1:9), y = plotting_data$mean.coefs)) +
-  geom_point(size = 4) +
+  geom_point(size = 3) +
   geom_errorbar(aes(ymax = upper, ymin = lower))
