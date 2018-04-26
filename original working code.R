@@ -30,11 +30,8 @@ Y.boostrap = matrix(nrow = 1074,ncol = 500)
 for (i in 1:num.boostraps){
   set.seed(seednum[i])
   bootstramp.sample.indexes = sample(1074,1074,replace = TRUE)
-  
   ordered = bootstramp.sample.indexes[order(as.numeric(bootstramp.sample.indexes))]
-  
   Y.boostrap[,i] = Y.final[ordered]
-  
 }
 
 
@@ -61,8 +58,6 @@ mean.coefs
 #install.packages("EBMAforecast")
 library(EBMAforecast)
 
-min(excluding_8)
-max(excluding_8)
 
 round_estimates <- function(x){
   if (x >= 1 | x <= 0){
@@ -70,8 +65,6 @@ round_estimates <- function(x){
   else {return(x)}
 }
 
-dim(excluding_8)
-length(excluding_8)
 
 rounded_output <- array(dim = c(1074,8,500))
 for (i in 1:length(excluding_8)){
@@ -79,9 +72,6 @@ for (i in 1:length(excluding_8)){
 }
 rounded_output
 
-dim(rounded_output)
-min(rounded_output)
-max(rounded_output)
 
 montgomery_results <- data.frame()
 for(i in 1:500){
@@ -90,8 +80,11 @@ for(i in 1:500){
   ForecastData <- makeForecastData(.predCalibration = results_slice, .outcomeCalibration = Y.boostrap[,i], .modelNames = Names)
   myCal <- calibrateEnsemble(ForecastData)
   weights <- myCal@modelWeights
-  rbind(montgomery_results, weights)
+  montgomery_results <- rbind(montgomery_results, weights)
 }
+colnames(montgomery_results) <- Names
+montgomery_results
+
 
 mean.coefs = numeric(8)
 error = numeric(8)
@@ -121,6 +114,10 @@ for (i in 1:num.boostraps){
   
 }
 
+
+######## original paper ######## 
+
+
 regress.func.results<- matrix(nrow = 500, ncol = 9)
 for(i in 1:500){
   regress.func.results[i,] <- regress.func(Y.boostrap[,i], results[,,i])
@@ -134,9 +131,43 @@ for (i in 1:9){
   mean.coefs[i] = mean(regress.func.results[,i])
 }
 
+
+######## Montgomery ######## 
+
+dim(results)
+
+rounded_output <- array(dim = c(1074,9,500))
+for (i in 1:length(results)){
+  rounded_output[i] <- round_estimates(results[i])
+}
+rounded_output
+
+montgomery_results <- data.frame()
+for(i in 1:500){
+  Names <- c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest", "KRLS", "Simple Average")
+  results_slice <- rounded_output[,,i]
+  ForecastData <- makeForecastData(.predCalibration = results_slice, .outcomeCalibration = Y.boostrap[,i], .modelNames = Names)
+  myCal <- calibrateEnsemble(ForecastData)
+  weights <- myCal@modelWeights
+  rbind(montgomery_results, weights)
+}
+
+mean.coefs = numeric(9)
+error = numeric(9)
+for (i in 1:9){
+  error[i] =sd(montgomery_results[,i])
+  mean.coefs[i] = mean(montgomery_results[,i])
+}
+
+mean.coefs
+
+
+##################### Plotting all models
+
+######## original paper ######## 
+
 plotting_data<- as.data.frame(mean.coefs)
 error
-##################### Plotting all models
 
 plotting_data<- as.data.frame(mean.coefs)
 upper<-(mean.coefs+ 1.96*error)
