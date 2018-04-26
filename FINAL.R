@@ -89,11 +89,9 @@ Xfull.original <- model.matrix(~X*treat)
 
 #Defining the Y variable 
 
-<<<<<<< HEAD
-Y.please.work<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
-=======
+Y.final <- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
+
 Y.original <- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
->>>>>>> 149fc500cab9be45dafb693e1372c40a4b551185
 
 
 
@@ -278,7 +276,7 @@ for (i in 1:num.boostraps){
 
 round_estimates <- function(x){
   if (x > 1 | x < 0){
-    return(round(x))}
+    return(round(x)+0.001)}
   else {return(x)}
 }
 

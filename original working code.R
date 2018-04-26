@@ -18,7 +18,7 @@ regress.func <- function(Y, preds.var){
 }
 
 
-###excluding fit 7
+### excluding fit 7
 
 Y.final<- approve_bi<- ifelse(svdat$approval<3, 1, 0)#line 292 of rep code 
 
@@ -37,6 +37,9 @@ for (i in 1:num.boostraps){
   
 }
 
+
+######## original paper ######## 
+
 regress.func.results<- matrix(nrow = 500, ncol = 8)
 for(i in 1:500){
   regress.func.results[i,] <- regress.func(Y.boostrap[,i], excluding_8[,,i])
@@ -51,6 +54,52 @@ for (i in 1:8){
 }
 
 mean.coefs
+
+
+######## Montgomery ######## 
+
+#install.packages("EBMAforecast")
+library(EBMAforecast)
+
+min(excluding_8)
+max(excluding_8)
+
+round_estimates <- function(x){
+  if (x >= 1 | x <= 0){
+    return(round(x)+0.001)}
+  else {return(x)}
+}
+
+dim(excluding_8)
+length(excluding_8)
+
+rounded_output <- array(dim = c(1074,8,500))
+for (i in 1:length(excluding_8)){
+  rounded_output[i] <- round_estimates(excluding_8[i])
+}
+rounded_output
+
+dim(rounded_output)
+min(rounded_output)
+max(rounded_output)
+
+montgomery_results <- data.frame()
+for(i in 1:500){
+  Names <- c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest", "KRLS", "Simple Average")
+  results_slice <- rounded_output[,,i]
+  ForecastData <- makeForecastData(.predCalibration = results_slice, .outcomeCalibration = Y.boostrap[,i], .modelNames = Names)
+  myCal <- calibrateEnsemble(ForecastData)
+  weights <- myCal@modelWeights
+  rbind(montgomery_results, weights)
+}
+
+
+
+
+
+
+
+
 
 #### all models ###############
 
