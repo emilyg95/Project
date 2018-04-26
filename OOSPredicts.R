@@ -76,22 +76,28 @@ RMSEforModel = function(x,y, test.indexes = sample(length(y),as.integer(length(y
   fit11.rmse = sqrt(mean((fit11.predict-y.test)^2))
   
   # Fit 12 = SVM-SMO
- # library(rJava)
-#  .jinit(parameters="-Xmx4g")
- # library(RWeka)
-#  subset.index = (1:length(y))[-test.indexes]
- # fit12 <- SMO(y ~ ., data = data.frame(y=factor(y),x), control = Weka_control(M = TRUE ) , subset = subset.index)
-#  fit12.predict =predict(fit12, newdata= data.frame(x[test.indexes,]), type="probability" )[,2]
- # fit12.RMSE = sqrt(mean((fit12.predict-y.test)^2))
-  
+  library(rJava)
+  .jinit(parameters="-Xmx4g")
+  library(RWeka)
+  subset.index = (1:length(y))[-test.indexes]
+  fit12 <- SMO(y ~ ., data = data.frame(y=factor(y),x), control = Weka_control(M = TRUE ) , subset = subset.index)
+  fit12.predict =predict(fit12, newdata= data.frame(x[test.indexes,]), type="probability" )[,2]
+  fit12.RMSE = sqrt(mean((fit12.predict-y.test)^2))
+
   
   # Fit 13 = Simple Mean
   fit13.predict = mean(y.train)
   fit13.RSME= sqrt(mean((fit13.predict-y.test)^2))
   
-  models = rbind("Lasso", "Elastic Net (a = .5)","Elastic Net (a = .25)", "Bayesian GLM", "BART", "Random Forest", "KRLS" , "Simple Average")#"SVM_SMO"
 
-  Preds.All = cbind(fit1.logistPred,fit2.logistPred,fit3.logistPred,fit6.predict,fit8.pred,fit9.pred,fit11.predict,  fit13.predict)#fit12
+  # W/O Fit12 (Req Java)
+  # Preds.All = cbind(fit1.logistPred,fit2.logistPred,fit3.logistPred,fit6.predict,fit8.pred,fit9.pred,fit11.predict,  fit13.predict)#fit12
+  #models = rbind("Lasso", "Elastic Net (a = .5)","Elastic Net (a = .25)", "Bayesian GLM", "BART", "Random Forest", "KRLS" , "Simple Average")#"SVM_SMO"
+  
+  # W/ Fit 12
+  Preds.All = cbind(fit1.logistPred,fit2.logistPred,fit3.logistPred,fit6.predict,fit8.pred,fit9.pred,fit11.predict, fit12.predict, fit13.predict)
+  models = rbind("Lasso", "Elastic Net (a = .5)","Elastic Net (a = .25)", "Bayesian GLM", "BART", "Random Forest", "KRLS" ,"SVM_SMO", "Simple Average")
+  
   #RMSE.all = rbind(fit1.logistPred.RMSE,fit2.logistPred.RMSE,fit3.logistPred.RMSE,fit6.logistPred.RMSE,fit8.rmse,fit9.rmse,fit11.rmse,fit12.RMSE, fit13.RSME)
   colnames(Preds.All) = models
   #return(data.frame(RMSE.all))
@@ -198,25 +204,27 @@ Xfull <- model.matrix(~X*treat)
 Y<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
 
 # # One Query
-# df<-RMSEforModel(Xfull,Y)
+ df<-RMSEforModel(Xfull,Y)
+
+# Slightly wrong
+# set.seed(100)
+# # With Cross Validation
+# indexes = 1:1074
+# indexes = sample(indexes)
+# indexes.matrix = matrix(indexes,nrow=10)
+# 
+# 
+# #Makes data frame with all 10 RMSE
+# preds = matrix(data = NA, ncol = 9);
+# for(i in 1:10){
+#   # df$i <-RMSEforModel(Xfull,Y,indexes.matrix[i,])
+#   temp <-RMSEforModel(Xfull,Y,indexes.matrix[i,])
+#   preds = rbind(preds,temp)
+# }
+# preds.in.order = preds[order(as.numeric(rownames(preds))),]
 
 
-set.seed(100)
-# With Cross Validation
-indexes = 1:1074
-indexes = sample(indexes)
-indexes.matrix = matrix(indexes,nrow=10)
-
-
-#Makes data frame with all 10 RMSE
-preds = matrix(data = NA, ncol = 9);
-for(i in 1:10){
-  # df$i <-RMSEforModel(Xfull,Y,indexes.matrix[i,])
-  temp <-RMSEforModel(Xfull,Y,indexes.matrix[i,])
-  preds = rbind(preds,temp)
-}
-preds.in.order = preds[order(as.numeric(rownames(preds))),]
-
+numBoostraps = 
 
 set.seed(100)
 # With Cross Validation
@@ -226,8 +234,10 @@ indexes.first = indexes[1:963]
 indexes.matrix.first = matrix(indexes.first,nrow=9)
 indexes.last = indexes[964:1074]
 indexes.matrix.last = matrix(indexes.last, nrow = 1)
-
-preds = matrix(data = NA, ncol = 8);
+## If Java
+preds = matrix(data = NA, ncol = 9);
+## If No Java
+# preds = matrix(data = NA, ncol = 8);
 for(i in 1:9){
   # df$i <-RMSEforModel(Xfull,Y,indexes.matrix[i,])
   temp <-RMSEforModel(Xfull,Y,indexes.matrix.first[i,])
