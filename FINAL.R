@@ -89,7 +89,7 @@ Xfull <- model.matrix(~X*treat)
 
 #Defining the Y variable 
 
-Y<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
+Y.please.work<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
 
 
 
@@ -283,10 +283,20 @@ run.time = finish.time-start.time
 
 # Montgomery
 
+please<- results[,c(1:6,8:9),]
+oneframe<- please[,,1]
+abs.data <- abs(oneframe)
+
+#47,48,224,253
+
+new_input <- abs.data[-c(47,48,224,253),]
+new_output<- Y.boostrap[,1]
+new_output<- new_output[-c(47,48,224,253)]
+
 #install.packages("EBMAforecast")
 library(EBMAforecast)
-Names = c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest", "KRLS", "SVM_SMO", "Simple Average")
-ForecastData = makeForecastData(.predCalibration = preds.in.order, .outcomeCalibration = Y, .modelNames = Names)
+Names = c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest",  "SVM_SMO", "Simple Average")
+ForecastData = makeForecastData(.predCalibration =new.test, .outcomeCalibration = new_output, .modelNames = Names)
 myCal<-calibrateEnsemble(ForecastData)
 myCal@modelWeights
 
@@ -324,6 +334,10 @@ regress.func <- function(Y, preds.var){
 }
 #####
 
+Y.please.work<- approve_bi<- ifelse(svdat$approval<3, 1, 0)#line 292 of rep code 
+
+please<- results[,c(1:6,8:9),]
+
 set.seed(10)
 seednum = sample(10000,num.boostraps)
 Y.boostrap = matrix(nrow = 1074,ncol = 500)
@@ -333,23 +347,24 @@ for (i in 1:num.boostraps){
   
   ordered = bootstramp.sample.indexes[order(as.numeric(bootstramp.sample.indexes))]
   
-  Y.boostrap[,i] = Y[ordered]
+  Y.boostrap[,i] = Y.please.work[ordered]
 
 }
 
 
 #makes matrix of all predicted weights 
 
-regress.func.results<- matrix(nrow = 500, ncol = 9)
+regress.func.results<- matrix(nrow = 500, ncol = 8)
 for(i in 1:500){
-  regress.func.results[i,] <- regress.func(Y.boostrap[,i], results[,,i])
+  regress.func.results[i,] <- regress.func(Y.boostrap[,i], please[,,i])
 }
 
 
-
-error = numeric(9)
-for (i in 1:9){
+mean.coefs = numeric(8)
+error = numeric(8)
+for (i in 1:8){
   error[i] =sd(regress.func.results[,i])
+  mean.coefs[i] = mean(regress.func.results[,i])
 }
 
 #####making the plot
