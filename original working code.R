@@ -93,21 +93,20 @@ for(i in 1:500){
   rbind(montgomery_results, weights)
 }
 
+mean.coefs = numeric(8)
+error = numeric(8)
+for (i in 1:8){
+  error[i] =sd(montgomery_results[,i])
+  mean.coefs[i] = mean(montgomery_results[,i])
+}
 
-
-
-
-
-
+mean.coefs
 
 
 #### all models ###############
 
 
-
 Y.final<- approve_bi<- ifelse(svdat$approval<3, 1, 0)#line 292 of rep code 
-
-
 
 set.seed(10)
 seednum = sample(10000,num.boostraps)
