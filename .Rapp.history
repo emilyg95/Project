@@ -1,2 +1,3 @@
 load("/Users/emilygarner/Documents/School/Second Sem/R/Project/PredsWorkspace.RData")
 load("/Users/emilygarner/Documents/School/Second Sem/R/Project/Bootstrap Samples.RData")
+load("/Users/emilygarner/Documents/School/Second Sem/R/Project/Het_Experiment.RData")
