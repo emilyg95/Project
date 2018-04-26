@@ -82,14 +82,14 @@ treat<- treats #line 448 of rep code
 
 ## X variable 
 
-covs<- cbind(dem, rep, lib, cons) #line 373 of rep code 
-X <- covs #line 432 of repcode 
-Xfull <- model.matrix(~X*treat)
+covs.original <- cbind(dem, rep, lib, cons) #line 373 of rep code 
+X.original <- covs #line 432 of repcode 
+Xfull.original <- model.matrix(~X*treat)
 
 
 #Defining the Y variable 
 
-Y<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
+Y.original <- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
 
 
 
@@ -195,8 +195,6 @@ OOSPredicts = function(x,y, test.indexes = sample(length(y),as.integer(length(y)
   return(Preds.All)
 }
 
-
-
 ############################ Setup for ML ########################
 
 #### Load Libraries
@@ -273,6 +271,15 @@ for (i in 1:num.boostraps){
   preds.in.order = preds.in.order[1:1074,]
   results[,,i] = preds.in.order;
 }
+
+round_estimates <- function(x){
+  if (x > 1 | x < 0){
+    return(round(x))}
+  else {return(x)}
+}
+
+apply(results[,,1], c(1,2), round_estimates)
+
 finish.time = Sys.time()
 
 run.time = finish.time-start.time
