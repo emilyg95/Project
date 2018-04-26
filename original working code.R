@@ -88,8 +88,8 @@ rounded_output
 
 
 montgomery_results <- data.frame()
+Names <- c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest", "KRLS", "Simple Average")
 for(i in 1:500){
-  Names <- c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest", "KRLS", "Simple Average")
   results_slice <- rounded_output[,,i]
   ForecastData <- makeForecastData(.predCalibration = results_slice, .outcomeCalibration = Y.boostrap[,i], .modelNames = Names)
   myCal <- calibrateEnsemble(ForecastData)
@@ -157,14 +157,16 @@ for (i in 1:length(results)){
 rounded_output
 
 montgomery_results <- data.frame()
+Names = c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest",  "SVM_SMO", "Simple Average")
 for(i in 1:500){
-  Names <- c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest", "KRLS", "Simple Average")
   results_slice <- rounded_output[,,i]
   ForecastData <- makeForecastData(.predCalibration = results_slice, .outcomeCalibration = Y.boostrap[,i], .modelNames = Names)
   myCal <- calibrateEnsemble(ForecastData)
   weights <- myCal@modelWeights
-  rbind(montgomery_results, weights)
+  montgomery_results <- rbind(montgomery_results, weights)
 }
+colnames(montgomery_results) <- Names
+montgomery_results
 
 mean.coefs = numeric(9)
 error = numeric(9)
