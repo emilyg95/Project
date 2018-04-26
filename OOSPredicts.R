@@ -204,7 +204,7 @@ Xfull <- model.matrix(~X*treat)
 Y<- approve_bi<- ifelse(svdat$approval<3, 1, 0) #line 292 of rep code 
 
 # # One Query
-# df<-RMSEforModel(Xfull,Y)
+ df<-RMSEforModel(Xfull,Y)
 
 # Slightly wrong
 # set.seed(100)

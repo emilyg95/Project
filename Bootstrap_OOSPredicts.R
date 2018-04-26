@@ -291,3 +291,15 @@ allchecks
 bad
 
 colnames(Xfull)[138]
+
+
+
+#### Get Indexes
+set.seed(10)
+seednum = sample(10000,num.boostraps)
+Y.boostrap = matrix(1074,500)
+for (i in 1:num.boostraps){
+  set.seed(seednum[i])
+  bootstramp.sample.indexes = sample(1074,1074,replace = TRUE)
+  Y.boostrap[,i] = Y[bootstramp.sample.indexes]
+}
