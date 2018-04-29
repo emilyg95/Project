@@ -148,6 +148,13 @@ for (i in 1:9){
 
 ######## Montgomery ######## 
 
+round_estimates <- function(x){
+  if (x <= 0){
+    return(round(x)+0.001)}
+  if (x >= 1){
+    return(round(x)-0.001)}
+  else {return(x)}
+}
 
 rounded_output <- array(dim = c(1074,9,500))
 for (i in 1:length(results)){
