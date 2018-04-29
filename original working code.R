@@ -148,7 +148,6 @@ for (i in 1:9){
 
 ######## Montgomery ######## 
 
-dim(results)
 
 rounded_output <- array(dim = c(1074,9,500))
 for (i in 1:length(results)){
