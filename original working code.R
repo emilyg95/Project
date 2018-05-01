@@ -87,28 +87,30 @@ for (i in 1:length(excluding_8)){
 rounded_output
 
 
-montgomery_results <- data.frame()
+montgomery_results_no7 <- data.frame()
 Names <- c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest", "KRLS", "Simple Average")
 for(i in 1:500){
   results_slice <- rounded_output[,,i]
   ForecastData <- makeForecastData(.predCalibration = results_slice, .outcomeCalibration = Y.boostrap[,i], .modelNames = Names)
   myCal <- calibrateEnsemble(ForecastData)
   weights <- myCal@modelWeights
-  montgomery_results <- rbind(montgomery_results, weights)
+  montgomery_results_no7 <- rbind(montgomery_results_no7, weights)
 }
-colnames(montgomery_results) <- Names
-montgomery_results
+colnames(montgomery_results_no7) <- Names
+head(montgomery_results_no7)
 
 
-mean_coefs_montgomery = numeric(8)
-error_montgomery = numeric(8)
+mean_coefs_montgomery_no7 = numeric(8)
+error_montgomery_no7 = numeric(8)
 for (i in 1:8){
-  error_montgomery[i] =sd(montgomery_results[,i])
-  mean_coefs_montgomery[i] = mean(montgomery_results[,i])
+  error_montgomery_no7[i] =sd(montgomery_results_no7[,i])
+  mean_coefs_montgomery_no7[i] = mean(montgomery_results_no7[,i])
 }
 
-mean_coefs_montgomery
-error_montgomery
+mean_coefs_montgomery_no7
+error_montgomery_no7
+
+save(mean_coefs_montgomery_no7, error_montgomery_no7, file = "montgomery_data.RData")
 
 
 #### all models ###############
