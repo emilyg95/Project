@@ -101,13 +101,14 @@ montgomery_results
 
 
 mean_coefs_montgomery = numeric(8)
-error = numeric(8)
+error_montgomery = numeric(8)
 for (i in 1:8){
-  error[i] =sd(montgomery_results[,i])
+  error_montgomery[i] =sd(montgomery_results[,i])
   mean_coefs_montgomery[i] = mean(montgomery_results[,i])
 }
 
 mean_coefs_montgomery
+error_montgomery
 
 
 #### all models ###############

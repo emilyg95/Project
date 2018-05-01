@@ -1,3 +1,6 @@
 load("/Users/emilygarner/Documents/School/Second Sem/R/Project/PredsWorkspace.RData")
 load("/Users/emilygarner/Documents/School/Second Sem/R/Project/Bootstrap Samples.RData")
 load("/Users/emilygarner/Documents/School/Second Sem/R/Project/Het_Experiment.RData")
+load("/Users/emilygarner/Documents/School/Second Sem/R/Project/montgomery_coefs1.RData")
+load("/Users/emilygarner/Documents/School/Second Sem/R/montgomery_data.RData")
+load("/Users/emilygarner/Documents/School/Second Sem/R/Project/montgomery_coefs1.RData")
