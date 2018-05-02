@@ -58,7 +58,7 @@ error_no7
 plotting_data_no7<- as.data.frame(mean.coefs_no7)
 
 Names_no7 <- c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART",
-               "Random Forest", "KRLS", "Simple Average")
+               "Random Forest",  "SVM_SMO", "Simple Average")
 
 plotting_data_no7 <- cbind(Names_no7, plotting_data_no7)
 
@@ -139,7 +139,7 @@ error_montgomery_no7
 plotting_data_montgomery<- as.data.frame(mean_coefs_montgomery_no7)
 
 Names_no7 <- c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART",
-               "Random Forest", "KRLS", "Simple Average")
+               "Random Forest", "SVM_SMO", "Simple Average")
 
 plotting_data_montgomery <- cbind(Names_no7, plotting_data_montgomery)
 upper_montgomery<-(mean_coefs_montgomery_no7+ 1.96*error_montgomery_no7)
