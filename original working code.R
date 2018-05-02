@@ -88,7 +88,7 @@ rounded_output
 
 
 montgomery_results_no7 <- data.frame()
-Names <- c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest", "KRLS", "Simple Average")
+Names <- c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest", "SVM_SMO", "Simple Average")
 for(i in 1:500){
   results_slice <- rounded_output[,,i]
   ForecastData <- makeForecastData(.predCalibration = results_slice, .outcomeCalibration = Y.boostrap[,i], .modelNames = Names)
@@ -153,9 +153,9 @@ for (i in 1:9){
 
 round_estimates <- function(x){
   if (x <= 0){
-    return(round(x)+0.001)}
-  if (x >= 1){
-    return(round(x)-0.001)}
+    return(0.001)}
+  else if (x >= 0.999){
+    return(0.999)}
   else {return(x)}
 }
 
@@ -163,10 +163,10 @@ rounded_output <- array(dim = c(1074,9,500))
 for (i in 1:length(results)){
   rounded_output[i] <- round_estimates(results[i])
 }
-rounded_output
+head(rounded_output)
 
 montgomery_results <- data.frame()
-Names = c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest",  "SVM_SMO", "Simple Average")
+Names = c("Lasso", "Elastic Net a = .5", "Elastic Net a = .25", "Bayesian GLM", "BART", "Random Forest",  "KRLS", "SVM_SMO", "Simple Average")
 for(i in 1:500){
   results_slice <- rounded_output[,,i]
   ForecastData <- makeForecastData(.predCalibration = results_slice, .outcomeCalibration = Y.boostrap[,i], .modelNames = Names)
